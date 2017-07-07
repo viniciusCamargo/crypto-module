@@ -3,6 +3,11 @@ import { Injectable } from '@hapiness/core';
 import * as pem from 'pem';
 declare const Buffer;
 
+export interface Pair {
+    privateKey: string;
+    publicKey: string;
+};
+
 @Injectable()
 export class PemService {
 
@@ -16,7 +21,7 @@ export class PemService {
         return getPublicKey(privateKey).map(key => key.publicKey);
     }
 
-    generatePair({ length }: any = { length: 2048 }): Observable<any> {
+    generatePair({ length }: any = { length: 2048 }): Observable<Pair> {
         const privateKeyObs = this.generatePrivateKey({ length });
         return privateKeyObs.flatMap(privateKey => this.getPublicKey(privateKey).map(publicKey => ({
             privateKey, publicKey

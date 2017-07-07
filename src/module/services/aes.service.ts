@@ -3,12 +3,33 @@ import { Injectable } from '@hapiness/core';
 import * as crypto from 'crypto';
 declare const Buffer;
 
+export interface AesKeyArgument {
+    password: string;
+    salt: string;
+};
+
 export interface GenerateKeyArguments {
     password: string;
     salt: string;
     iterations?: number;
     keylen?: number;
     digest?: string;
+};
+
+export interface EncryptArguments {
+    input: Buffer|string;
+    aesKey?: AesKeyArgument;
+    password?: string;
+    salt?: string;
+    algorithm?: string;
+};
+
+export interface DecryptArguments {
+    input: Buffer|string;
+    aesKey?: AesKeyArgument;
+    password?: string;
+    salt?: string;
+    algorithm?: string;
 };
 
 export interface AesKey {
@@ -28,7 +49,7 @@ export class AesService {
         }
     }
 
-    encrypt(opts: any): Observable<any> {
+    encrypt(opts: EncryptArguments): Observable<Buffer> {
         const { input, aesKey, algorithm, password, salt } =
             Object.assign({ input: null, aesKey: null, algorithm: 'aes-256-cbc', password: null, salt: null }, opts);
 
@@ -46,7 +67,7 @@ export class AesService {
         });
     }
 
-    decrypt(opts: any): Observable<any> {
+    decrypt(opts: DecryptArguments): Observable<Buffer> {
         const { input, aesKey, algorithm, password, salt } =
             Object.assign({ input: null, aesKey: null, algorithm: 'aes-256-cbc', password: null, salt: null }, opts);
 
@@ -63,7 +84,7 @@ export class AesService {
         });
     }
 
-    generateKey(opts: GenerateKeyArguments): Observable<any> {
+    generateKey(opts: GenerateKeyArguments): Observable<AesKey> {
       const { password, salt, iterations, keylen, digest } =
       Object.assign({ password: null, salt: null, iterations: 4096, keylen: 24, digest: 'sha256' }, opts);
       const pbkdf2: any = Observable.bindNodeCallback(crypto.pbkdf2);

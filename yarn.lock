@@ -68,6 +68,10 @@
   version "7.0.22"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.22.tgz#4593f4d828bdd612929478ea40c67b4f403ca255"
 
+"@types/node@~8.0.1":
+  version "8.0.7"
+  resolved "http://nexus.in.tdw/repository/npm/@types/node/-/node-8.0.7.tgz#fb0ad04b5b6f6eabe0372a32a8f1fbba5c130cae"
+
 "@types/podium@*":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/podium/-/podium-1.0.0.tgz#bfaa2151be2b1d6109cc69f7faa9dac2cba3bb20"
@@ -133,6 +137,10 @@ argparse@^1.0.7:
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.9.tgz#73d83bc263f86e97f8cc4f6bae1b0e90a7d22c86"
   dependencies:
     sprintf-js "~1.0.2"
+
+array-uniq@1.0.2:
+  version "1.0.2"
+  resolved "http://nexus.in.tdw/repository/npm/array-uniq/-/array-uniq-1.0.2.tgz#5fcc373920775723cfd64d65c64bef53bf9eba6d"
 
 arrify@^1.0.0:
   version "1.0.1"
@@ -1216,6 +1224,10 @@ os-locale@^1.4.0:
   dependencies:
     lcid "^1.0.0"
 
+os-tmpdir@^1.0.1:
+  version "1.0.2"
+  resolved "http://nexus.in.tdw/repository/npm/os-tmpdir/-/os-tmpdir-1.0.2.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
+
 parse-json@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/parse-json/-/parse-json-2.2.0.tgz#f480f40434ef80741f8469099f8dea18f55a4dc9"
@@ -1243,6 +1255,13 @@ path-type@^1.0.0:
     graceful-fs "^4.1.2"
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
+
+pem@~1.9.7:
+  version "1.9.7"
+  resolved "http://nexus.in.tdw/repository/npm/pem/-/pem-1.9.7.tgz#d387f996f292c7c9dea639a535805e74cb503161"
+  dependencies:
+    os-tmpdir "^1.0.1"
+    which "^1.2.4"
 
 pez@2.x.x:
   version "2.1.4"
@@ -1287,6 +1306,12 @@ qs@1.2.0:
 qs@~6.3.0:
   version "6.3.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.3.2.tgz#e75bd5f6e268122a2a0e0bda630b2550c166502c"
+
+randomstring@~1.1.5:
+  version "1.1.5"
+  resolved "http://nexus.in.tdw/repository/npm/randomstring/-/randomstring-1.1.5.tgz#6df0628f75cbd5932930d9fe3ab4e956a18518c3"
+  dependencies:
+    array-uniq "1.0.2"
 
 read-pkg-up@^1.0.1:
   version "1.0.1"
@@ -1755,7 +1780,7 @@ which-module@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/which-module/-/which-module-1.0.0.tgz#bba63ca861948994ff307736089e3b96026c2a4f"
 
-which@^1.1.1:
+which@^1.1.1, which@^1.2.4:
   version "1.2.14"
   resolved "https://registry.yarnpkg.com/which/-/which-1.2.14.tgz#9a87c4378f03e827cecaf1acdf56c736c01c14e5"
   dependencies:

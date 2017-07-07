@@ -22,15 +22,6 @@ const encrypt_me = `'Space... The final frontier...These are the voyages of the 
 
 @suite('- Integration CryptoModuleTest file')
 class CryptoModuleTest {
-    /**
-     * Function executed before the suite
-     */
-    static before() {}
-
-    /**
-     * Function executed after the suite
-     */
-    static after() {}
 
     /**
      * Class constructor
@@ -64,7 +55,7 @@ class CryptoModuleTest {
             version: '1.0.0',
             options: {
                 host: '0.0.0.0',
-                port: 4443
+                port: 0
             },
             imports: [
                 CryptoModule
@@ -113,7 +104,7 @@ class CryptoModuleTest {
             version: '1.0.0',
             options: {
                 host: '0.0.0.0',
-                port: 4443
+                port: 0
             },
             imports: [
                 CryptoModule
@@ -150,7 +141,7 @@ class CryptoModuleTest {
             version: '1.0.0',
             options: {
                 host: '0.0.0.0',
-                port: 4443
+                port: 0
             },
             imports: [
                 CryptoModule

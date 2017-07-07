@@ -2,8 +2,8 @@
   "name": "@hapiness/crypto",
   "version": "1.0.0",
   "description": "Helpers to generate AES/PEM keys and random strings",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "private": false,
   "scripts": {
     "test": "make test",
