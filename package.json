@@ -69,7 +69,8 @@
   },
   "homepage": "https://github.com/hapinessjs/empty-module#readme",
   "dependencies": {
-    "@hapiness/core": "^1.0.0-beta.6",
+    "@hapiness/core": "^1.0.0-rc.4",
+    "node-rsa": "^0.4.2",
     "pem": "~1.9.7",
     "randomstring": "~1.1.5",
     "rxjs": "^5.4.0"
@@ -77,8 +78,8 @@
   "devDependencies": {
     "@types/fs-extra": "^3.0.2",
     "@types/node": "~8.0.1",
-    "debug": "^2.6.8",
     "coveralls": "^2.13.0",
+    "debug": "^2.6.8",
     "fs-extra": "^3.0.1",
     "istanbul": "^1.1.0-alpha.1",
     "mocha": "^3.4.2",

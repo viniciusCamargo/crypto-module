@@ -28,7 +28,7 @@ export class RandomstringService {
     * Function to generate a randomstring
     * @return {string}
     */
-    generate(options: GenerateArguments) {
+    generate(options?: GenerateArguments) {
       return randomstring.generate(options);
     }
 

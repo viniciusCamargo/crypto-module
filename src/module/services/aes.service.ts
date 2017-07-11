@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@hapiness/core';
 import * as crypto from 'crypto';
-declare const Buffer;
+import { Buffer } from 'buffer';
 
 export interface AesKeyArgument {
     password: string;
@@ -11,9 +11,6 @@ export interface AesKeyArgument {
 export interface GenerateKeyArguments {
     password: string;
     salt: string;
-    iterations?: number;
-    keylen?: number;
-    digest?: string;
 };
 
 export interface EncryptArguments {
@@ -21,7 +18,6 @@ export interface EncryptArguments {
     aesKey?: AesKeyArgument;
     password?: string;
     salt?: string;
-    algorithm?: string;
 };
 
 export interface DecryptArguments {
@@ -29,7 +25,6 @@ export interface DecryptArguments {
     aesKey?: AesKeyArgument;
     password?: string;
     salt?: string;
-    algorithm?: string;
 };
 
 export interface AesKey {
@@ -37,12 +32,24 @@ export interface AesKey {
     iv: string;
 };
 
+export interface GetAesKeyArguments {
+    aesKey?: AesKey;
+    password?: string;
+    salt?: string;
+};
+
 @Injectable()
 export class AesService {
 
-    _getAesKey(opts: any): Observable<AesKey> {
+    private _algorithm: 'aes-256-cbc';
+
+    constructor() {
+        this._algorithm = 'aes-256-cbc';
+    }
+
+    private _getAesKey(opts: GetAesKeyArguments): Observable<AesKey> {
         const { aesKey, password, salt } = Object.assign({ password: null, salt: null }, opts);
-        if (!aesKey && password && salt) {
+        if (!aesKey) {
             return this.generateKey({ password, salt });
         } else {
             return Observable.create(observer => observer.next(aesKey));
@@ -50,11 +57,11 @@ export class AesService {
     }
 
     encrypt(opts: EncryptArguments): Observable<Buffer> {
-        const { input, aesKey, algorithm, password, salt } =
-            Object.assign({ input: null, aesKey: null, algorithm: 'aes-256-cbc', password: null, salt: null }, opts);
+        const { input, aesKey, password, salt } =
+            Object.assign({ input: null, aesKey: null, password: null, salt: null }, opts);
 
         return this._getAesKey({ aesKey, password, salt }).map(_aesKey => {
-            const cipher = crypto.createCipheriv(algorithm, _aesKey.key, _aesKey.iv);
+            const cipher = crypto.createCipheriv(this._algorithm, _aesKey.key, _aesKey.iv);
             const bufEncrypted = cipher.update(input);
             const bufFinal = cipher.final();
 
@@ -68,11 +75,11 @@ export class AesService {
     }
 
     decrypt(opts: DecryptArguments): Observable<Buffer> {
-        const { input, aesKey, algorithm, password, salt } =
-            Object.assign({ input: null, aesKey: null, algorithm: 'aes-256-cbc', password: null, salt: null }, opts);
+        const { input, aesKey, password, salt } =
+            Object.assign({ input: null, aesKey: null, password: null, salt: null }, opts);
 
         return this._getAesKey({ aesKey, password, salt }).map(_aesKey => {
-            const cipher = crypto.createDecipheriv(algorithm, _aesKey.key, _aesKey.iv);
+            const cipher = crypto.createDecipheriv(this._algorithm, _aesKey.key, _aesKey.iv);
             const bufDecrypted = cipher.update(input, 'binary');
             const bufFinal = cipher.final();
 
@@ -85,15 +92,26 @@ export class AesService {
     }
 
     generateKey(opts: GenerateKeyArguments): Observable<AesKey> {
-      const { password, salt, iterations, keylen, digest } =
-      Object.assign({ password: null, salt: null, iterations: 4096, keylen: 24, digest: 'sha256' }, opts);
-      const pbkdf2: any = Observable.bindNodeCallback(crypto.pbkdf2);
-      const gen = pbkdf2(password, salt, iterations, keylen, digest);
-      return gen.map(keyBuffer => {
-          const key = keyBuffer.toString('hex').slice(0, 32).toString('hex');
-          const iv = keyBuffer.toString('hex').slice(32).toString('hex');
-          return { key, iv };
-      });
+        const { password, salt } = Object.assign({ password: null, salt: null }, opts);
+
+        if (typeof password !== 'string' || !password) {
+            throw new Error('Missing aes password');
+        }
+
+        if (typeof salt !== 'string' || !salt) {
+            throw new Error('Missing aes salt');
+        }
+
+        const iterations = 4096;
+        const keylen = 24;
+        const digest = 'sha256';
+        const pbkdf2: any = Observable.bindNodeCallback(crypto.pbkdf2);
+        const gen = pbkdf2(password, salt, iterations, keylen, digest);
+        return gen.map(keyBuffer => {
+            const key = keyBuffer.toString('hex').slice(0, 32).toString('hex');
+            const iv = keyBuffer.toString('hex').slice(32).toString('hex');
+            return { key, iv };
+        });
     }
 
 }

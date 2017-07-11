@@ -56,6 +56,22 @@ class AesServiceTest {
         });
     }
 
+    @test('- Generate key without salt or password should throw')
+    generateKeyError() {
+        unit.exception(_ => {
+            unit.when('No arguments', this._aesService.generateKey(<any>undefined));
+        }).isInstanceOf(Error).hasProperty('message', 'Missing aes password');
+        unit.exception(_ => {
+            unit.when('No arguments', this._aesService.generateKey(<any>{ password: null }));
+        }).isInstanceOf(Error).hasProperty('message', 'Missing aes password');
+        unit.exception(_ => {
+            unit.when('No arguments', this._aesService.generateKey(<any>{ password: '' }));
+        }).isInstanceOf(Error).hasProperty('message', 'Missing aes password');
+        unit.exception(_ => {
+            unit.when('No arguments', this._aesService.generateKey(<any>{ password: 'xaxaxa' }));
+        }).isInstanceOf(Error).hasProperty('message', 'Missing aes salt');
+    }
+
     @test('- `AesService.encrypt()` test encrypt function with aesKey already generated')
     testAesServiceEncryptWithAesKey(done) {
         const fn = this._aesService.encrypt({ aesKey: data.aesKey, input: data.encrypt_me });

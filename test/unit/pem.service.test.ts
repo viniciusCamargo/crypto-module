@@ -60,4 +60,14 @@ class PemServiceTest {
         });
     }
 
+    @test('- Generate private key')
+    generatePrivateKey(done) {
+        unit.function(this._pemService.generatePrivateKey);
+        const obs = this._pemService.generatePrivateKey();
+        obs.subscribe(res => {
+            unit.string(res.replace(/\n/g, '')).match(/-----BEGIN RSA PRIVATE KEY-----.+-----END RSA PRIVATE KEY-----$/g);
+            done();
+        });
+    }
+
 }
