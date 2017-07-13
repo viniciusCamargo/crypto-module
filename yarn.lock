@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@hapiness/core@^1.0.0-rc.4":
-  version "1.0.0-rc.4"
-  resolved "http://nexus.in.tdw/repository/npm/@hapiness/core/-/core-1.0.0-rc.4.tgz#ad95e817f6dd765c692944a4c42dc5ba72d24f5d"
+"@hapiness/core@^1.0.0-rc.5":
+  version "1.0.0-rc.5"
+  resolved "http://nexus.in.tdw/repository/npm/@hapiness/core/-/core-1.0.0-rc.5.tgz#494ef0f19d2711659bfad6418bd7a13f13196a97"
   dependencies:
     "@types/boom" "^4.3.5"
     "@types/hapi" "^16.1.6"
@@ -15,7 +15,6 @@
     debug "^2.6.8"
     hapi "^16.4.3"
     reflect-metadata "^0.1.10"
-    rxjs "^5.4.2"
     websocket "^1.0.24"
 
 "@types/boom@*", "@types/boom@^4.3.5":
@@ -1425,12 +1424,6 @@ rimraf@^2.6.1:
 rxjs@^5.4.0:
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.4.0.tgz#a7db14ab157f9d7aac6a56e655e7a3860d39bf26"
-  dependencies:
-    symbol-observable "^1.0.1"
-
-rxjs@^5.4.2:
-  version "5.4.2"
-  resolved "http://nexus.in.tdw/repository/npm/rxjs/-/rxjs-5.4.2.tgz#2a3236fcbf03df57bae06fd6972fd99e5c08fcf7"
   dependencies:
     symbol-observable "^1.0.1"
 

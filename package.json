@@ -69,7 +69,7 @@
   },
   "homepage": "https://github.com/hapinessjs/empty-module#readme",
   "dependencies": {
-    "@hapiness/core": "^1.0.0-rc.4",
+    "@hapiness/core": "^1.0.0-rc.5",
     "node-rsa": "^0.4.2",
     "pem": "~1.9.7",
     "randomstring": "~1.1.5",
