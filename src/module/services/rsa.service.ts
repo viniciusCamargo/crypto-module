@@ -3,14 +3,14 @@ import { Injectable } from '@hapiness/core';
 import * as NodeRsa from 'node-rsa';
 import { Buffer } from 'buffer';
 
-export interface EncryptArguments {
+export interface RsaEncryptArguments {
     key: string;
     input: string|Buffer;
     format?: string;
     options?: any;
 };
 
-export interface DecryptArguments {
+export interface RsaDecryptArguments {
     key: string;
     input: string|Buffer;
     source_encoding?: string;
@@ -25,7 +25,7 @@ export class RsaService {
         this._allowedEncodings = ['utf8', 'base64', 'hex', 'binary'];
     }
 
-    encrypt({ key, input, format, options }: EncryptArguments): Buffer {
+    encrypt({ key, input, format, options }: RsaEncryptArguments): Buffer {
         if (typeof key !== 'string' || !key) {
             throw new Error('Invalid key');
         }
@@ -35,7 +35,7 @@ export class RsaService {
         return encrypted;
     }
 
-    decrypt({ key, input, source_encoding }:DecryptArguments = { key: null, input: null, source_encoding: 'utf8' }): Buffer {
+    decrypt({ key, input, source_encoding }: RsaDecryptArguments = { key: null, input: null, source_encoding: 'utf8' }): Buffer {
         if (typeof key !== 'string' || !key) {
             throw new Error('Invalid key');
         }
@@ -47,7 +47,8 @@ export class RsaService {
             }
 
             if (!this._allowedEncodings.includes(source_encoding)) {
-                throw new Error(`Source encoding must be one of the following: "${this._allowedEncodings.join(',')}", Provided: "${source_encoding}"`);
+                throw new Error(`Source encoding must be one of the following:
+ "${this._allowedEncodings.join(',')}", Provided: "${source_encoding}"`.replace(/\n/g, ''));
             }
 
             _input = Buffer.from(input, source_encoding);

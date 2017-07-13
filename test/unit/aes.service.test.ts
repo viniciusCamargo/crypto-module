@@ -114,11 +114,5 @@ class AesServiceTest {
             done();
         });
     }
-    /**
-     * Test if `AesService.generate()` Observable returns 'Hello World'
-     */
-    // @test('- `AesService.generate()` Observable function must return a string with `Hello World` value')
-    // testAesServiceSayHelloObservableReturnString(done) {
-    //     this._helloWorldService.generate().subscribe(m => unit.string(m).is('Hello World').when(_ => done()));
-    // }
+
 }

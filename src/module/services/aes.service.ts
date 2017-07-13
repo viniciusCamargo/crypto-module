@@ -3,11 +3,6 @@ import { Injectable } from '@hapiness/core';
 import * as crypto from 'crypto';
 import { Buffer } from 'buffer';
 
-export interface AesKeyArgument {
-    password: string;
-    salt: string;
-};
-
 export interface GenerateKeyArguments {
     password: string;
     salt: string;
@@ -15,14 +10,14 @@ export interface GenerateKeyArguments {
 
 export interface EncryptArguments {
     input: Buffer|string;
-    aesKey?: AesKeyArgument;
+    aesKey?: AesKey;
     password?: string;
     salt?: string;
 };
 
 export interface DecryptArguments {
     input: Buffer|string;
-    aesKey?: AesKeyArgument;
+    aesKey?: AesKey;
     password?: string;
     salt?: string;
 };

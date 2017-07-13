@@ -8,14 +8,14 @@ export interface Pair {
     publicKey: string;
 };
 
-export interface GenerateKeyArguments {
+export interface GeneratePemKeyArguments {
     length?: number;
 };
 
 @Injectable()
 export class PemService {
 
-    generatePrivateKey({ length }: GenerateKeyArguments = { length: 2048 }): Observable<string> {
+    generatePrivateKey({ length }: GeneratePemKeyArguments = { length: 2048 }): Observable<string> {
         const createPrivateKey: any = Observable.bindNodeCallback(pem.createPrivateKey);
         return createPrivateKey(length).map(key => key.key);
     }
@@ -25,7 +25,7 @@ export class PemService {
         return getPublicKey(privateKey).map(key => key.publicKey);
     }
 
-    generatePair({ length }: GenerateKeyArguments = { length: 2048 }): Observable<Pair> {
+    generatePair({ length }: GeneratePemKeyArguments = { length: 2048 }): Observable<Pair> {
         const privateKeyObs = this.generatePrivateKey({ length });
         return privateKeyObs.flatMap(privateKey => this.getPublicKey(privateKey).map(publicKey => ({
             privateKey, publicKey

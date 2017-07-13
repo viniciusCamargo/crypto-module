@@ -8,7 +8,7 @@ import { test, suite, only } from 'mocha-typescript';
  */
 import * as unit from 'unit.js';
 
-import { Hapiness, HapinessModule, HttpServer, Lib, OnStart } from '@hapiness/core';
+import { Hapiness, HapinessModule, Lib, OnStart } from '@hapiness/core';
 import { Observable } from 'rxjs/Observable';
 
 // element to test
@@ -46,17 +46,13 @@ class CryptoModuleTest {
             constructor(private _helloWorldService: RandomstringService) {
                 unit.object(this._helloWorldService).isInstanceOf(RandomstringService);
                 unit.function(this._helloWorldService.generate);
-                unit.string(this._helloWorldService.generate())
-                    .when(_ => Hapiness.kill().subscribe(__ => done()));
+                unit.string(this._helloWorldService.generate());
+                done();
             }
         }
 
         @HapinessModule({
             version: '1.0.0',
-            options: {
-                host: '0.0.0.0',
-                port: 0
-            },
             imports: [
                 CryptoModule
             ],
@@ -95,17 +91,13 @@ class CryptoModuleTest {
                     });
                 })
                 .subscribe(decrypted => {
-                    Hapiness.kill().subscribe(__ => done());
+                    done();
                 });
             }
         }
 
         @HapinessModule({
             version: '1.0.0',
-            options: {
-                host: '0.0.0.0',
-                port: 0
-            },
             imports: [
                 CryptoModule
             ],
@@ -132,17 +124,13 @@ class CryptoModuleTest {
                     unit.object(m).hasProperties(['privateKey', 'publicKey']);
                     unit.string(m.privateKey);
                     unit.string(m.publicKey);
-                    Hapiness.kill().subscribe(__ => done());
+                    done();
                 });
             }
         }
 
         @HapinessModule({
             version: '1.0.0',
-            options: {
-                host: '0.0.0.0',
-                port: 0
-            },
             imports: [
                 CryptoModule
             ],
