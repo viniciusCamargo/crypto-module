@@ -21,7 +21,7 @@ const encrypt_me = `'Space... The final frontier...These are the voyages of the 
                       new civilisations... To boldly go where no one has gone before!'`;
 
 @suite('- Integration CryptoModuleTest file')
-class CryptoModuleTest {
+class CryptoModuleIntegrationTest {
 
     /**
      * Class constructor
