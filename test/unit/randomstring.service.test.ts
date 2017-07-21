@@ -8,8 +8,6 @@ import { test, suite } from 'mocha-typescript';
  */
 import * as unit from 'unit.js';
 
-import { Observable } from 'rxjs/Observable';
-
 // element to test
 import { RandomstringService } from '../../src';
 
@@ -28,12 +26,13 @@ class RandomstringServiceTest {
     }
 
     @test('- `RandomstringService` must have `generate` function')
-    testRandomstringServiceGenerate() {
-        unit.function(this._randomstringService.generate);
+    testRandomstringServiceGenerate(done) {
+        console.log(this._randomstringService);
+        unit.function(this._randomstringService.generate).when(_ => done());
     }
 
     @test('- `RandomstringService.generate()` function must return a string')
-    testRandomstringServiceSayHelloObservable() {
-        unit.string(this._randomstringService.generate());
+    testRandomstringServiceSayHelloObservable(done) {
+        this._randomstringService.generate().subscribe(str => unit.string(str).when(_ => done()));
     }
 }

@@ -1,5 +1,5 @@
 import { HapinessModule } from '@hapiness/core';
-import { RandomstringService, AesService, PemService, RsaService } from './services';
+import { RandomstringService, AesService, PemService, RSAService } from './services';
 
 @HapinessModule({
     version: '1.0.0',
@@ -7,13 +7,13 @@ import { RandomstringService, AesService, PemService, RsaService } from './servi
         RandomstringService,
         AesService,
         PemService,
-        RsaService
+        RSAService
     ],
     exports: [
         RandomstringService,
         AesService,
         PemService,
-        RsaService
+        RSAService
     ]
 })
 export class CryptoModule {}

@@ -6,5 +6,6 @@
     { "name":"index.js", "remove":true },
     { "name":"index.js.map", "remove":true },
     { "name":"index.d.ts", "remove":true },
-    { "name":"module", "remove":true }
+    { "name":"module", "remove":true },
+    { "name":"observable", "remove":true }
 ]

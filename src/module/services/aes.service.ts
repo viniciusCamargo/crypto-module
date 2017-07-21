@@ -1,37 +1,37 @@
-import { Observable } from 'rxjs';
 import { Injectable } from '@hapiness/core';
+import { Observable } from 'rxjs/Observable';
 import * as crypto from 'crypto';
 import { Buffer } from 'buffer';
 
 export interface GenerateKeyArguments {
     password: string;
     salt: string;
-};
+}
 
 export interface EncryptArguments {
     input: Buffer|string;
     aesKey?: AesKey;
     password?: string;
     salt?: string;
-};
+}
 
 export interface DecryptArguments {
     input: Buffer|string;
     aesKey?: AesKey;
     password?: string;
     salt?: string;
-};
+}
 
 export interface AesKey {
     key: string;
     iv: string;
-};
+}
 
 export interface GetAesKeyArguments {
     aesKey?: AesKey;
     password?: string;
     salt?: string;
-};
+}
 
 @Injectable()
 export class AesService {

@@ -46,8 +46,7 @@ class CryptoModuleIntegrationTest {
             constructor(private _helloWorldService: RandomstringService) {
                 unit.object(this._helloWorldService).isInstanceOf(RandomstringService);
                 unit.function(this._helloWorldService.generate);
-                unit.string(this._helloWorldService.generate());
-                done();
+                this._helloWorldService.generate().subscribe(str => unit.string(str).when(_ => done()));
             }
         }
 

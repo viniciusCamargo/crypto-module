@@ -1,67 +1,49 @@
-import { Observable } from 'rxjs';
 import { Injectable } from '@hapiness/core';
-import * as NodeRsa from 'node-rsa';
-import { Buffer } from 'buffer';
-
-export interface RsaEncryptArguments {
-    key: string;
-    input: string|Buffer;
-    format?: string;
-    options?: any;
-};
-
-export interface RsaDecryptArguments {
-    key: string;
-    input: string|Buffer;
-    source_encoding?: string;
-};
+import { Observable } from 'rxjs/Observable';
+import * as NodeRSA from 'node-rsa';
+import { KeyBits, Key, Format, Options } from 'node-rsa';
 
 @Injectable()
-export class RsaService {
-
-    private _allowedEncodings;
-
-    constructor() {
-        this._allowedEncodings = ['utf8', 'base64', 'hex', 'binary'];
-    }
-
-    encrypt({ key, input, format, options }: RsaEncryptArguments): Buffer {
-        if (typeof key !== 'string' || !key) {
-            throw new Error('Invalid key');
-        }
-
-        const _key = new NodeRsa(key, format, options);
-        const encrypted = _key.encrypt(input, 'buffer');
-        return encrypted;
-    }
-
-    decrypt({ key, input, source_encoding }: RsaDecryptArguments = { key: null, input: null, source_encoding: 'utf8' }): Buffer {
-        if (typeof key !== 'string' || !key) {
-            throw new Error('Invalid key');
-        }
-
-        let _input;
-        if (typeof input === 'string') {
-            if (typeof source_encoding !== 'string' || !source_encoding) {
-                throw new Error('Invalid source encoding');
+export class RSAService {
+    /**
+     * Generate new key with length specified.
+     *
+     * @param keyBits
+     *
+     * @return {any}
+     */
+    createKey(keyBits?: KeyBits): Observable<NodeRSA> {
+        return Observable.create(observer => {
+            try {
+                const nodeRSA = new NodeRSA(keyBits);
+                observer.next(nodeRSA);
+                observer.complete();
+            } catch (e) {
+                observer.error(e);
             }
-
-            if (!this._allowedEncodings.includes(source_encoding)) {
-                throw new Error(`Source encoding must be one of the following:
- "${this._allowedEncodings.join(',')}", Provided: "${source_encoding}"`.replace(/\n/g, ''));
-            }
-
-            _input = Buffer.from(input, source_encoding);
-        } else if (typeof input === 'object' && input instanceof Buffer) {
-            _input = input;
-        } else {
-            throw new Error('Invalid input');
-        }
-
-        const _key = new NodeRsa(key);
-
-        const decrypted = _key.decrypt(_input, 'buffer', source_encoding);
-        return decrypted;
+        });
     }
 
+    /**
+     * Load key from string/buffer/components.
+     *
+     * @param key
+     * @param format
+     * @param options
+     *
+     * @return {any}
+     */
+    loadKey(key: Key, format?: Format, options?: Options): Observable<NodeRSA> {
+        return Observable.create(observer => {
+            try {
+                const nodeRSA = new NodeRSA(key, format, options);
+                observer.next(nodeRSA);
+                observer.complete();
+            } catch (e) {
+                observer.error(e);
+            }
+        });
+    }
 }
+
+export { KeyBits, Key, Format, Options };

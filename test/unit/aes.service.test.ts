@@ -38,12 +38,12 @@ class AesServiceTest {
         this._aesService = undefined;
     }
 
-    @test('- `AesService` must have `generateKey` function')
+    @test('- `AesService` must have `createKey` function')
     testAesServiceGenerate() {
         unit.function(this._aesService.generateKey);
     }
 
-    @test('- `AesService.generateKey()` test function')
+    @test('- `AesService.createKey()` test function')
     testAesServicegenerateKey(done) {
         const fn = this._aesService.generateKey({ password: 'hello', salt: 'world' });
         unit.object(fn).isInstanceOf(Observable);

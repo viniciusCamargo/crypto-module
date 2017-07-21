@@ -14,10 +14,9 @@
         "typeRoots": ["./node_modules/@types"],
         "types": [
             "node",
-            "boom",
-            "hapi",
-            "hoek",
-            "joi",
+            "node-rsa",
+            "pem",
+            "randomstring",
             "fs-extra"
         ],
         "lib": [
