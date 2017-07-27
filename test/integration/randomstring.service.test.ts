@@ -8,12 +8,10 @@ import { suite, test } from 'mocha-typescript';
  */
 import * as unit from 'unit.js';
 
-import { Observable } from 'rxjs/Observable';
-
 // element to test
 import { RandomstringService } from '../../src';
 
-@suite('- Unit RandomstringServiceTest file')
+@suite('- Integration RandomstringServiceTest file')
 class RandomstringServiceTest {
     // private property to store service instance
     private _randomstringService: RandomstringService;
@@ -37,18 +35,18 @@ class RandomstringServiceTest {
     }
 
     /**
-     * Test if `RandomstringService` as a `generate` function
+     * Test if `RandomstringService.generate()` Observable returns 'string'
      */
-    @test('- `RandomstringService` must have `generate` function')
-    testRandomstringServiceGenerate() {
-        unit.function(this._randomstringService.generate);
+    @test('- `RandomstringService.generate()` Observable function must return a string')
+    testRandomstringServiceGenerateObservableReturnString(done) {
+        this._randomstringService.generate().subscribe(m => unit.string(m).when(_ => done()));
     }
 
     /**
-     * Test if `RandomstringService.generate()` function returns an Observable
+     * Test if `RandomstringService.generate()` Observable returns 'string'
      */
-    @test('- `RandomstringService.generate()` function must return an Observable')
-    testRandomstringServiceGenerateObservable() {
-        unit.object(this._randomstringService.generate()).isInstanceOf(Observable);
+    @test('- `RandomstringService.generate()` Observable function must return a string with 32 chars')
+    testRandomstringServiceGenerateObservableReturnStringLength(done) {
+        this._randomstringService.generate(32).subscribe(m => unit.string(m).hasLength(32).when(_ => done()));
     }
 }

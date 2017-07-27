@@ -1,32 +1,29 @@
 import { Observable } from 'rxjs/Observable';
 import { Operator } from 'rxjs/Operator';
 import { Subscriber } from 'rxjs/Subscriber';
-import { Format } from 'node-rsa';
 
 /**
  * New observable operator
  *
- * Export key to PEM string, PEM/DER Buffer or components.
- *
- * @param format key format
+ * @param strict if true method will return false if key pair have private exponent. Default false.
  *
  * @return {Observable<T>|WebSocketSubject<T>}
  */
-export function exportKey<T>(format?: Format): Observable<T> {
-    return this.lift(new ExportKeyOperator(this, format));
+export function isPublic<T>(strict?: boolean): Observable<T> {
+    return this.lift(new IsPublicOperator(this, strict));
 }
 
 /**
  * Operator class definition
  */
-class ExportKeyOperator<T> implements Operator<T, T> {
+class IsPublicOperator<T> implements Operator<T, T> {
     /**
      * Class constructor
      *
      * @param _source subscriber source
-     * @param _format key format
+     * @param _strict if true method will return false if key pair have private exponent. Default false.
      */
-    constructor(private _source: Observable<T>, private _format?: Format) {
+    constructor(private _source: Observable<T>, private _strict?: boolean) {
     }
 
     /**
@@ -38,22 +35,22 @@ class ExportKeyOperator<T> implements Operator<T, T> {
      * @return {AnonymousSubscription|Subscription|Promise<PushSubscription>|TeardownLogic}
      */
     call(subscriber: Subscriber<T>, source: any): any {
-        return source.subscribe(new ExportKeySubscriber(subscriber, this._source, this._format));
+        return source.subscribe(new IsPublicSubscriber(subscriber, this._source, this._strict));
     }
 }
 
 /**
  * Operator subscriber class definition
  */
-class ExportKeySubscriber<T> extends Subscriber<T> {
+class IsPublicSubscriber<T> extends Subscriber<T> {
     /**
      * Class constructor
      *
      * @param destination subscriber destination
      * @param _source subscriber source
-     * @param _format key format
+     * @param _strict if true method will return false if key pair have private exponent. Default false.
      */
-    constructor(destination: Subscriber<T>, private _source: Observable<T>, private _format?: Format) {
+    constructor(destination: Subscriber<T>, private _source: Observable<T>, private _strict?: boolean) {
         super(destination);
     }
 
@@ -67,8 +64,8 @@ class ExportKeySubscriber<T> extends Subscriber<T> {
     protected _next(value: T): void {
         this._source.subscribe((nodeRSA) => {
                 try {
-                    const k = (<any> nodeRSA).exportKey(this._format);
-                    this.destination.next(k);
+                    const k = (<any> nodeRSA).isPublic(this._strict);
+                    this.destination.next(!!k);
                     this.destination.complete();
                 } catch (e) {
                     this.destination.error(e);

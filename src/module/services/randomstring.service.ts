@@ -4,22 +4,22 @@ import { GenerateOptions, generate } from 'randomstring';
 
 @Injectable()
 export class RandomstringService {
-    constructor() {}
     /**
-    * Function to generate a randomstring
-    * @return {string}
-    */
+     * Function to generate a random string
+     *
+     * @param {GenerateOptions | number} [options] Optional object or number to configure data of generation
+     *
+     * @return {Observable<string>}
+     */
     generate(options?: GenerateOptions | number): Observable<string> {
-      return Observable.create(observer => {
-          try {
-              const str = generate(options);
-              observer.next(str);
-              observer.complete();
-          } catch (e) {
-              observer.error(e);
-          }
-      });
+        return Observable.create(observer => {
+            observer.next(generate(options));
+            observer.complete();
+        });
     }
 }
 
+/**
+ * Export randomstring interfaces
+ */
 export { GenerateOptions };

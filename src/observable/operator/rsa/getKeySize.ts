@@ -1,32 +1,28 @@
 import { Observable } from 'rxjs/Observable';
 import { Operator } from 'rxjs/Operator';
 import { Subscriber } from 'rxjs/Subscriber';
-import { Format } from 'node-rsa';
 
 /**
  * New observable operator
  *
- * Export key to PEM string, PEM/DER Buffer or components.
- *
- * @param format key format
+ * Return key size in bits.
  *
  * @return {Observable<T>|WebSocketSubject<T>}
  */
-export function exportKey<T>(format?: Format): Observable<T> {
-    return this.lift(new ExportKeyOperator(this, format));
+export function getKeySize<T>(): Observable<T> {
+    return this.lift(new GetKeySizeOperator(this));
 }
 
 /**
  * Operator class definition
  */
-class ExportKeyOperator<T> implements Operator<T, T> {
+class GetKeySizeOperator<T> implements Operator<T, T> {
     /**
      * Class constructor
      *
      * @param _source subscriber source
-     * @param _format key format
      */
-    constructor(private _source: Observable<T>, private _format?: Format) {
+    constructor(private _source: Observable<T>) {
     }
 
     /**
@@ -38,22 +34,21 @@ class ExportKeyOperator<T> implements Operator<T, T> {
      * @return {AnonymousSubscription|Subscription|Promise<PushSubscription>|TeardownLogic}
      */
     call(subscriber: Subscriber<T>, source: any): any {
-        return source.subscribe(new ExportKeySubscriber(subscriber, this._source, this._format));
+        return source.subscribe(new GetKeySizeSubscriber(subscriber, this._source));
     }
 }
 
 /**
  * Operator subscriber class definition
  */
-class ExportKeySubscriber<T> extends Subscriber<T> {
+class GetKeySizeSubscriber<T> extends Subscriber<T> {
     /**
      * Class constructor
      *
      * @param destination subscriber destination
      * @param _source subscriber source
-     * @param _format key format
      */
-    constructor(destination: Subscriber<T>, private _source: Observable<T>, private _format?: Format) {
+    constructor(destination: Subscriber<T>, private _source: Observable<T>) {
         super(destination);
     }
 
@@ -67,7 +62,7 @@ class ExportKeySubscriber<T> extends Subscriber<T> {
     protected _next(value: T): void {
         this._source.subscribe((nodeRSA) => {
                 try {
-                    const k = (<any> nodeRSA).exportKey(this._format);
+                    const k = (<any> nodeRSA).getKeySize();
                     this.destination.next(k);
                     this.destination.complete();
                 } catch (e) {

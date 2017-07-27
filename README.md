@@ -33,6 +33,12 @@
 
 # Crypto Module
 
+Crypto module provides some functions for security features like `AES key`, `Key pair`, `PKCS12` and `Certificate` generation.
+
+We use existing node modules to provide these functions: [NodeRSA](https://github.com/rzcoder/node-rsa), [PEM](https://github.com/Dexus/pem) and [RandomString](https://github.com/klughammer/node-randomstring) but we add `Observable` support.
+
+**All most important security features in only one module.**
+
 ## Table of contents
 
 * [Maintainers](#maintainers)
@@ -60,6 +66,6 @@
 
 ## License
 
-Copyright (c) 2017 **Hapiness** Licensed under the [MIT license](https://github.com/hapinessjs/empty-module/blob/master/LICENSE.md).
+Copyright (c) 2017 **Hapiness** Licensed under the [MIT license](https://github.com/hapinessjs/crypto-module/blob/master/LICENSE.md).
 
 [Back to top](#table-of-contents)

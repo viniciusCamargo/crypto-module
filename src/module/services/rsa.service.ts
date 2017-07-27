@@ -1,7 +1,7 @@
 import { Injectable } from '@hapiness/core';
 import { Observable } from 'rxjs/Observable';
 import * as NodeRSA from 'node-rsa';
-import { KeyBits, Key, Format, Options } from 'node-rsa';
+import { KeyBits, Key, Format, Options, Encoding, Data } from 'node-rsa';
 
 @Injectable()
 export class RSAService {
@@ -46,4 +46,7 @@ export class RSAService {
     }
 }
 
-export { KeyBits, Key, Format, Options };
+/**
+ * Export rsa interfaces
+ */
+export { KeyBits, Key, Format, Options, Encoding, Data };

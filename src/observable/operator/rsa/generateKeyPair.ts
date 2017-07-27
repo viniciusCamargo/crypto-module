@@ -1,32 +1,31 @@
 import { Observable } from 'rxjs/Observable';
 import { Operator } from 'rxjs/Operator';
 import { Subscriber } from 'rxjs/Subscriber';
-import { Format } from 'node-rsa';
 
 /**
  * New observable operator
  *
- * Export key to PEM string, PEM/DER Buffer or components.
- *
- * @param format key format
+ * @param bits Key size in bits. 2048 by default.
+ * @param exponent public exponent. 65537 by default.
  *
  * @return {Observable<T>|WebSocketSubject<T>}
  */
-export function exportKey<T>(format?: Format): Observable<T> {
-    return this.lift(new ExportKeyOperator(this, format));
+export function generateKeyPair<T>(bits?: number, exponent?: number): Observable<T> {
+    return this.lift(new GenerateKeyPairOperator(this, bits, exponent));
 }
 
 /**
  * Operator class definition
  */
-class ExportKeyOperator<T> implements Operator<T, T> {
+class GenerateKeyPairOperator<T> implements Operator<T, T> {
     /**
      * Class constructor
      *
      * @param _source subscriber source
-     * @param _format key format
+     * @param _bits Key size in bits. 2048 by default.
+     * @param _exponent public exponent. 65537 by default.
      */
-    constructor(private _source: Observable<T>, private _format?: Format) {
+    constructor(private _source: Observable<T>, private _bits?: number, private _exponent?: number) {
     }
 
     /**
@@ -38,22 +37,23 @@ class ExportKeyOperator<T> implements Operator<T, T> {
      * @return {AnonymousSubscription|Subscription|Promise<PushSubscription>|TeardownLogic}
      */
     call(subscriber: Subscriber<T>, source: any): any {
-        return source.subscribe(new ExportKeySubscriber(subscriber, this._source, this._format));
+        return source.subscribe(new GenerateKeyPairSubscriber(subscriber, this._source, this._bits, this._exponent));
     }
 }
 
 /**
  * Operator subscriber class definition
  */
-class ExportKeySubscriber<T> extends Subscriber<T> {
+class GenerateKeyPairSubscriber<T> extends Subscriber<T> {
     /**
      * Class constructor
      *
      * @param destination subscriber destination
      * @param _source subscriber source
-     * @param _format key format
+     * @param _bits Key size in bits. 2048 by default.
+     * @param _exponent public exponent. 65537 by default.
      */
-    constructor(destination: Subscriber<T>, private _source: Observable<T>, private _format?: Format) {
+    constructor(destination: Subscriber<T>, private _source: Observable<T>, private _bits?: number, private _exponent?: number) {
         super(destination);
     }
 
@@ -67,8 +67,8 @@ class ExportKeySubscriber<T> extends Subscriber<T> {
     protected _next(value: T): void {
         this._source.subscribe((nodeRSA) => {
                 try {
-                    const k = (<any> nodeRSA).exportKey(this._format);
-                    this.destination.next(k);
+                    (<any> nodeRSA).generateKeyPair(this._bits, this._exponent);
+                    this.destination.next(nodeRSA);
                     this.destination.complete();
                 } catch (e) {
                     this.destination.error(e);

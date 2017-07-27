@@ -6,10 +6,12 @@ import { Key, Format } from 'node-rsa';
 /**
  * New observable operator
  *
+ * Import key from PEM string, PEM/DER Buffer or components.
+ *
  * @param key key from PEM string, PEM/DER Buffer or components
  * @param format key format
  *
- * @return {Observable<R>|WebSocketSubject<R>}
+ * @return {Observable<T>|WebSocketSubject<T>}
  */
 export function importKey<T>(key: Key, format?: Format): Observable<T> {
     return this.lift(new ImportKeyOperator(this, key, format));
@@ -26,7 +28,8 @@ class ImportKeyOperator<T> implements Operator<T, T> {
      * @param _key key from PEM string, PEM/DER Buffer or components
      * @param _format key format
      */
-    constructor(private _source: Observable<T>, private _key: Key, private _format?: Format) {}
+    constructor(private _source: Observable<T>, private _key: Key, private _format?: Format) {
+    }
 
     /**
      * Function calls when operator is executing
@@ -73,8 +76,7 @@ class ImportKeySubscriber<T> extends Subscriber<T> {
                 } catch (e) {
                     this.destination.error(e);
                 }
-            },
-            error => this.destination.error(error)
+            }
         );
     }
 }

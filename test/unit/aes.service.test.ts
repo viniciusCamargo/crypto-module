@@ -1,15 +1,7 @@
 /**
  * @see https://github.com/pana-cc/mocha-typescript
  */
-import { test, suite } from 'mocha-typescript';
-declare const Buffer;
-
-const data: any = {
-    aesKey: {},
-    encrypt_me: `Space... The final frontier...These are the voyages of the Starship Enterprise.
-                          Its continuing mission: To explore strange new worlds... To seek out new life;
-                          new civilisations... To boldly go where no one has gone before!`,
-};
+import { suite, test } from 'mocha-typescript';
 
 /**
  * @see http://unitjs.com/
@@ -17,102 +9,116 @@ const data: any = {
 import * as unit from 'unit.js';
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/observable/throw';
+import { Buffer } from 'buffer';
 
 // element to test
-import { AesService } from '../../src';
+import { AesService, HashService } from '../../src';
+import '../../src/observable/add/aes/encryptWithAesKey';
+import '../../src/observable/add/aes/decryptWithAesKey';
 
 @suite('- Unit AesServiceTest file')
 class AesServiceTest {
+    // private property to store service instance
     private _aesService: AesService;
-    private _aesKey: any;
+    // private property to store mock service instance
+    private _hashServiceMock: any;
+    // private property to store password
+    private _password: string;
+    // private property to store salt
+    private _salt: string;
 
-    static before() {}
-
-    static after() {}
-
-    before() {
-        this._aesService = new AesService();
+    /**
+     * Class constructor
+     */
+    constructor() {
     }
 
+    /**
+     * Function executed before each test
+     */
+    before() {
+        this._aesService = new AesService(new HashService());
+        this._hashServiceMock = unit.mock(this._aesService['_hashService']);
+        this._password = 'P3HQdR35PUQLZ5ioOrsPlxx7QWra7WQl';
+        this._salt = 'Kt9V3wgxrhpf8GN3';
+    }
+
+    /**
+     * Function executed after each test
+     */
     after() {
         this._aesService = undefined;
+        this._hashServiceMock = undefined;
+        this._password = undefined;
+        this._salt = undefined;
     }
 
+    /**
+     * Test if `AesService` as a `generate` function
+     */
     @test('- `AesService` must have `createKey` function')
-    testAesServiceGenerate() {
-        unit.function(this._aesService.generateKey);
+    testAesServiceCreateKey() {
+        unit.function(this._aesService.createKey);
     }
 
-    @test('- `AesService.createKey()` test function')
-    testAesServicegenerateKey(done) {
-        const fn = this._aesService.generateKey({ password: 'hello', salt: 'world' });
-        unit.object(fn).isInstanceOf(Observable);
-        fn.subscribe(m => {
-            unit.object(m).hasProperties(['key', 'iv']);
-            unit.string(m.key).is('c1555303da309f6b7d1e8fe45636bfdd');
-            unit.string(m.iv).is('dc4bf56405e7e94e');
-            data.aesKey = m;
+    /**
+     * Test if `AesService.createKey()` function returns an Observable
+     */
+    @test('- `AesService.createKey()` function must return an Observable')
+    testAesServiceCreateKeyObservable() {
+        unit.object(this._aesService.createKey(null, null)).isInstanceOf(Observable);
+    }
+
+    /**
+     * Test if `AesService.createKey()` function returns an Observable with error if AES key parameters are wrong
+     */
+    @test('- `AesService.createKey()` function must return an Observable with error if AES key parameters are wrong')
+    testAesServiceCreateKeyObservableError(done) {
+        this._hashServiceMock.expects('generate').returns(Observable.throw(new Error('Wrong AES key')));
+
+        this._aesService.createKey(null, null)
+            .subscribe(null, error => {
+                unit.object(error).hasProperty('message', 'Wrong AES key').when(_ => {
+                    this._hashServiceMock.verify();
+                    this._hashServiceMock.restore();
+                    done();
+                });
+            });
+    }
+
+    /**
+     * Test if `AesService.createKey().encryptWithAesKey()` function returns an Observable
+     */
+    @test('- `AesService.createKey().encryptWithAesKey()` function must return an Observable')
+    testAesServiceEncryptWithAesKeyObservable(done) {
+        this._hashServiceMock.expects('generate')
+            .returns(Observable.of(
+                new Buffer('61cac683ff27580e4c68778df5208c745b0e4731727786586938c794a37f441931cef43b785870e993cbc94aee0354cf', 'hex')));
+
+        unit.object(this._aesService.createKey(this._password, this._salt).encryptWithAesKey(null))
+            .isInstanceOf(Observable).when(_ => {
+            this._hashServiceMock.verify();
+            this._hashServiceMock.restore();
             done();
         });
     }
 
-    @test('- Generate key without salt or password should throw')
-    generateKeyError() {
-        unit.exception(_ => {
-            unit.when('No arguments', this._aesService.generateKey(<any>undefined));
-        }).isInstanceOf(Error).hasProperty('message', 'Missing aes password');
-        unit.exception(_ => {
-            unit.when('No arguments', this._aesService.generateKey(<any>{ password: null }));
-        }).isInstanceOf(Error).hasProperty('message', 'Missing aes password');
-        unit.exception(_ => {
-            unit.when('No arguments', this._aesService.generateKey(<any>{ password: '' }));
-        }).isInstanceOf(Error).hasProperty('message', 'Missing aes password');
-        unit.exception(_ => {
-            unit.when('No arguments', this._aesService.generateKey(<any>{ password: 'xaxaxa' }));
-        }).isInstanceOf(Error).hasProperty('message', 'Missing aes salt');
-    }
+    /**
+     * Test if `AesService.createKey().decryptWithAesKey()` function returns an Observable
+     */
+    @test('- `AesService.createKey().decryptWithAesKey()` function must return an Observable')
+    testAesServiceDecryptWithAesKeyObservable(done) {
+        this._hashServiceMock.expects('generate')
+            .returns(Observable.of(
+                new Buffer('61cac683ff27580e4c68778df5208c745b0e4731727786586938c794a37f441931cef43b785870e993cbc94aee0354cf', 'hex')));
 
-    @test('- `AesService.encrypt()` test encrypt function with aesKey already generated')
-    testAesServiceEncryptWithAesKey(done) {
-        const fn = this._aesService.encrypt({ aesKey: data.aesKey, input: data.encrypt_me });
-        unit.object(fn).isInstanceOf(Observable);
-        fn.subscribe(encrypted => {
-            unit.object(encrypted).isInstanceOf(Buffer);
+        unit.object(this._aesService.createKey(this._password, this._salt).decryptWithAesKey(null))
+            .isInstanceOf(Observable).when(_ => {
+            this._hashServiceMock.verify();
+            this._hashServiceMock.restore();
             done();
         });
     }
-
-    @test('- `AesService.encrypt()` test encrypt function without aesKey')
-    testAesServiceEncryptWithoutAesKey(done) {
-        const fn = this._aesService.encrypt({ password: 'hello', salt: 'world', input: data.encrypt_me });
-        unit.object(fn).isInstanceOf(Observable);
-        fn.subscribe(encrypted => {
-            unit.object(encrypted).isInstanceOf(Buffer);
-            data.encrypted = encrypted;
-            done();
-        });
-    }
-
-    @test('- `AesService.decrypt()` test decrypt function with aesKey')
-    testAesServiceDeEncryptWithAesKey(done) {
-        const fn = this._aesService.decrypt({ aesKey: data.aesKey, input: data.encrypted });
-        unit.object(fn).isInstanceOf(Observable);
-        fn.subscribe(decrypted => {
-            unit.object(decrypted).isInstanceOf(Buffer);
-            unit.string(decrypted.toString('utf8')).is(data.encrypt_me);
-            done();
-        });
-    }
-
-    @test('- `AesService.decrypt()` test decrypt function with aesKey')
-    testAesServiceDeEncryptWithoutAesKey(done) {
-        const fn = this._aesService.decrypt({ password: 'hello', salt: 'world', input: data.encrypted });
-        unit.object(fn).isInstanceOf(Observable);
-        fn.subscribe(decrypted => {
-            unit.object(decrypted).isInstanceOf(Buffer);
-            unit.string(decrypted.toString('utf8')).is(data.encrypt_me);
-            done();
-        });
-    }
-
 }

@@ -1,33 +1,25 @@
 /**
  * @see https://github.com/pana-cc/mocha-typescript
  */
-import { test, suite, only } from 'mocha-typescript';
+import { test, suite } from 'mocha-typescript';
 
 /**
  * @see http://unitjs.com/
  */
 import * as unit from 'unit.js';
 
-import { Hapiness, HapinessModule, Lib, OnStart } from '@hapiness/core';
-import { Observable } from 'rxjs/Observable';
+import { Hapiness, HapinessModule, OnStart } from '@hapiness/core';
 
 // element to test
-import { CryptoModule, RandomstringService, AesService, PemService } from '../../src';
-
-declare const Buffer;
-
-const encrypt_me = `'Space... The final frontier...These are the voyages of the Starship Enterprise.
-                      Its continuing mission: To explore strange new worlds... To seek out new life;
-                      new civilisations... To boldly go where no one has gone before!'`;
+import { CryptoModule, PemService, AesService, RSAService, RandomstringService } from '../../src';
 
 @suite('- Integration CryptoModuleTest file')
-class CryptoModuleIntegrationTest {
-
+class CryptoModuleTest {
     /**
      * Class constructor
-     * New lifecycle
      */
-    constructor() {}
+    constructor() {
+    }
 
     /**
      * Function executed before each test
@@ -39,107 +31,113 @@ class CryptoModuleIntegrationTest {
      */
     after() {}
 
-    @test('- Injected `RandomstringService` must have `generate` function')
-    testInjectableRandomstringServiceGenerate(done) {
-        @Lib()
-        class CryptoLib {
-            constructor(private _helloWorldService: RandomstringService) {
-                unit.object(this._helloWorldService).isInstanceOf(RandomstringService);
-                unit.function(this._helloWorldService.generate);
-                this._helloWorldService.generate().subscribe(str => unit.string(str).when(_ => done()));
+    /**
+     * Test if `PemService.createPrivateKey()` Observable returns an error if openSSL path is wrong
+     */
+    @test('- check if `PemService.createPrivateKey()` Observable returns an error if openSSL path is wrong')
+    testPemServiceFunctionErrorWithWrongConfig(done) {
+        @HapinessModule({
+            version: '1.0.0',
+            imports: [
+                CryptoModule.setConfig({ pem: { pathOpenSSL: '' } })
+            ]
+        })
+        class ModuleTest implements OnStart {
+            constructor(private _pemService: PemService) {}
+
+            onStart(): void {
+                this._pemService.createPrivateKey().subscribe(null, e => unit.error(e))
             }
         }
 
+        Hapiness.bootstrap(ModuleTest).then(_ => done());
+    }
+
+    /**
+     * Test if injected `_pemService` is an instance of `PemService`
+     */
+    @test('- check if injected `_pemService` is an instance of `PemService`')
+    testPemServiceInjected(done) {
         @HapinessModule({
             version: '1.0.0',
             imports: [
                 CryptoModule
-            ],
-            declarations: [
-                CryptoLib
             ]
         })
-        class CryptoModuleTest {}
+        class ModuleTest implements OnStart {
+            constructor(private _pemService: PemService) {}
 
-        Hapiness.bootstrap(CryptoModuleTest);
-    }
-
-    @test('- Test injected `AesService`')
-    testInjectableAesService(done) {
-        @Lib()
-        class CryptoLib {
-            constructor(private _helloWorldService: AesService) {
-                unit.function(this._helloWorldService.generateKey);
-                unit.function(this._helloWorldService.encrypt);
-                unit.function(this._helloWorldService.decrypt);
-                const obs = this._helloWorldService.generateKey({ password: 'hello', salt: 'world' });
-                unit.object(obs).isInstanceOf(Observable);
-                obs.map(m => {
-                    unit.object(m).hasProperties(['key', 'iv']);
-                    unit.string(m.key).is('c1555303da309f6b7d1e8fe45636bfdd');
-                    unit.string(m.iv).is('dc4bf56405e7e94e');
-                    return m;
-                })
-                .switchMap(aesKey => this._helloWorldService.encrypt({ aesKey, input: encrypt_me }).map((encrypted) => {
-                    unit.object(encrypted).isInstanceOf(Buffer);
-                    return ({ aesKey, encrypted });
-                }))
-                .switchMap(({ aesKey, encrypted }) => {
-                    return this._helloWorldService.decrypt({ input: encrypted, aesKey: aesKey }).map(decrypted => {
-                        unit.object(decrypted).isInstanceOf(Buffer);
-                    });
-                })
-                .subscribe(decrypted => {
-                    done();
-                });
+            onStart(): void {
+                unit.object(this._pemService).isInstanceOf(PemService);
             }
         }
 
+        Hapiness.bootstrap(ModuleTest).then(_ => done());
+    }
+
+    /**
+     * Test if injected `_aesService` is an instance of `AesService`
+     */
+    @test('- check if injected `_aesService` is an instance of `AesService`')
+    testAesServiceInjected(done) {
         @HapinessModule({
             version: '1.0.0',
             imports: [
                 CryptoModule
-            ],
-            declarations: [
-                CryptoLib
             ]
         })
-        class CryptoModuleTest {}
+        class ModuleTest implements OnStart {
+            constructor(private _aesService: AesService) {}
 
-        Hapiness.bootstrap(CryptoModuleTest);
-    }
-
-    @test('- Test injected `PemService`')
-    testInjectablePemService(done) {
-        @Lib()
-        class CryptoLib {
-            constructor(private _helloWorldService: PemService) {
-                unit.function(this._helloWorldService.generatePrivateKey);
-                unit.function(this._helloWorldService.getPublicKey);
-                unit.function(this._helloWorldService.generatePair);
-                const obs = this._helloWorldService.generatePair();
-                unit.object(obs).isInstanceOf(Observable);
-                obs.subscribe(m => {
-                    unit.object(m).hasProperties(['privateKey', 'publicKey']);
-                    unit.string(m.privateKey);
-                    unit.string(m.publicKey);
-                    done();
-                });
+            onStart(): void {
+                unit.object(this._aesService).isInstanceOf(AesService);
             }
         }
 
+        Hapiness.bootstrap(ModuleTest).then(_ => done());
+    }
+
+    /**
+     * Test if injected `_rsaService` is an instance of `RSAService`
+     */
+    @test('- check if injected `_rsaService` is an instance of `RSAService`')
+    testRsaServiceInjected(done) {
         @HapinessModule({
             version: '1.0.0',
             imports: [
                 CryptoModule
-            ],
-            declarations: [
-                CryptoLib
             ]
         })
-        class CryptoModuleTest {}
+        class ModuleTest implements OnStart {
+            constructor(private _rsaService: RSAService) {}
 
-        Hapiness.bootstrap(CryptoModuleTest);
+            onStart(): void {
+                unit.object(this._rsaService).isInstanceOf(RSAService);
+            }
+        }
+
+        Hapiness.bootstrap(ModuleTest).then(_ => done());
     }
 
+    /**
+     * Test if injected `_randomstringService` is an instance of `RandomstringService`
+     */
+    @test('- check if injected `_randomstringService` is an instance of `RandomstringService`')
+    testRandomstringServiceInjected(done) {
+        @HapinessModule({
+            version: '1.0.0',
+            imports: [
+                CryptoModule
+            ]
+        })
+        class ModuleTest implements OnStart {
+            constructor(private _randomstringService: RandomstringService) {}
+
+            onStart(): void {
+                unit.object(this._randomstringService).isInstanceOf(RandomstringService);
+            }
+        }
+
+        Hapiness.bootstrap(ModuleTest).then(_ => done());
+    }
 }
