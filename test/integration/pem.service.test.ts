@@ -163,9 +163,9 @@ class PEMServiceTest {
     }
 
     /**
-     * Test if `PEMService.createPkcs12()` Observable returns `PKCS12Result` object `{pkcs12}`
+     * Test if `PEMService.createPkcs12()` Observable returns `PKCS12CreationResult` object `{pkcs12}`
      */
-    @test('- `PEMService.createPkcs12()` Observable must return `PKCS12Result` object `{pkcs12}`')
+    @test('- `PEMService.createPkcs12()` Observable must return `PKCS12CreationResult` object `{pkcs12}`')
     testPemServiceCreatePkcs12Observable(done) {
         this._pemService.createPrivateKey()
             .flatMap((pk: PrivateKeyCreationResult) => this._pemService.createCertificate({

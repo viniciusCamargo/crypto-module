@@ -71,8 +71,17 @@ export interface DhParamInfoResult {
 /**
  * Pkcs12 definition
  */
-export interface PKCS12Result {
+export interface PKCS12CreationResult {
     pkcs12: any;
+}
+
+/**
+ * Pkcs12 read definition
+ */
+export interface PKCS12ReadResult {
+    key: string;
+    cert: string;
+    ca: string[];
 }
 
 @Injectable()
@@ -188,7 +197,7 @@ export class PEMService {
      * Gets the fingerprint for a certificate
      *
      * @param {String} certificate PEM encoded certificate
-     * @param {HashFunction} [hash] Optional Hash function to use (either md5 sha1 or sha256, defaults to sha256), defaults sha1
+     * @param {HashFunction} [hash] Optional Hash function to use (either md5 sha1 or sha256, defaults to sha1)
      *
      * @return {Observable<FingerprintResult>} {fingerprint}
      */
@@ -230,11 +239,11 @@ export class PEMService {
      * @param {Pkcs12CreationOptions} [options] Optional object of cipher and optional client key password
      *  {cipher:'aes128', clientKeyPassword: 'xxx'}
      *
-     * @return {Observable<PKCS12Result>} {pkcs12}
+     * @return {Observable<PKCS12CreationResult>} {pkcs12}
      */
-    createPkcs12(key: string, certificate: string, password: string, options?: Pkcs12CreationOptions): Observable<PKCS12Result> {
+    createPkcs12(key: string, certificate: string, password: string, options?: Pkcs12CreationOptions): Observable<PKCS12CreationResult> {
         return (<(key: string, certificate: string, password: string, options?: Pkcs12CreationOptions) =>
-            Observable<PKCS12Result>> Observable.bindNodeCallback(pem.createPkcs12))(key, certificate, password, options);
+            Observable<PKCS12CreationResult>> Observable.bindNodeCallback(pem.createPkcs12))(key, certificate, password, options);
     }
 
     /**
@@ -243,11 +252,11 @@ export class PEMService {
      * @param {String} bufferOrPath Buffer representation or path to PKCS12 keystore
      * @param {Pkcs12ReadOptions} [options] Optional object of optional keystore and client key passwords
      *
-     * @return {Observable<PKCS12Result>} {pkcs12}
+     * @return {Observable<PKCS12ReadResult>} {key,cert,ca}
      */
-    readPkcs12(bufferOrPath: string, options?: Pkcs12ReadOptions): Observable<PKCS12Result> {
+    readPkcs12(bufferOrPath: string, options?: Pkcs12ReadOptions): Observable<PKCS12ReadResult> {
         return (<(bufferOrPath: string, options?: Pkcs12ReadOptions) =>
-            Observable<PKCS12Result>> Observable.bindNodeCallback(pem.readPkcs12))(bufferOrPath, options);
+            Observable<any>> Observable.bindNodeCallback(pem.readPkcs12))(bufferOrPath, options);
     }
 
     /**
