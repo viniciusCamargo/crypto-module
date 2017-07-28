@@ -56,17 +56,18 @@ We use existing node modules to provide these functions: [NodeRSA](https://githu
 ### `yarn` or `npm` it in your `package.json`
 
 ```bash
-$ npm install --save @hapiness/crypto
+$ npm install --save @hapiness/core @hapiness/crypto rxjs
 
 or
 
-$ yarn add @hapiness/crypto
+$ yarn add @hapiness/core @hapiness/crypto rxjs
 ```
 
 ```javascript
 "dependencies": {
+    "@hapiness/core": "^1.0.0-rc.6",
     "@hapiness/crypto": "^1.0.0-rc.6",
-    "@hapiness/crypto": "^1.0.0-rc.6",
+    "rxjs": "^5.4.2",
     //...
 }
 //...
