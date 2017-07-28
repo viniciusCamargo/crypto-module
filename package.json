@@ -1,7 +1,7 @@
 {
     "name": "@hapiness/crypto",
     "version": "1.0.0.rc.6",
-    "description": "Crypto module provides some functions for security features like AES key, Key pair, PKCS12 and Certificate generation",
+    "description": "Crypto module provides some functions for security features like AES key, Key pair, RSA key, PKCS12, Certificate, PEM and more",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "private": false,
@@ -98,7 +98,7 @@
         "rxjs": "^5.4.2",
         "ts-node": "^3.3.0",
         "tslint": "^5.5.0",
-        "typescript": "^2.4.1",
+        "typescript": "^2.4.2",
         "unit.js": "^2.0.0"
     },
     "peerDependencies": {

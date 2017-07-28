@@ -2,6 +2,7 @@
     { "name":"README.md" },
     { "name":"LICENSE.md" },
     { "name":"package.json" },
+    { "name":"documentation" },
     { "name":"src" },
     { "name":"index.js", "remove":true },
     { "name":"index.js.map", "remove":true },

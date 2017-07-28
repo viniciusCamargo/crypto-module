@@ -33,16 +33,119 @@
 
 # Crypto Module
 
-Crypto module provides some functions for security features like `AES key`, `Key pair`, `PKCS12` and `Certificate` generation.
+`Crypto` module for the [Hapiness](https://github.com/hapinessjs/hapiness) framework provides some functions for security features like `AES key`, `Key pair`, `PKCS12`, `RSA key`, `Certificate` and more.
 
-We use existing node modules to provide these functions: [NodeRSA](https://github.com/rzcoder/node-rsa), [PEM](https://github.com/Dexus/pem) and [RandomString](https://github.com/klughammer/node-randomstring) but we add `Observable` support.
+We use existing node modules to provide these functions: [NodeRSA](https://github.com/rzcoder/node-rsa), [PEM](https://github.com/Dexus/pem) and [RandomString](https://github.com/klughammer/node-randomstring) but we add `Observable` feature for asynchronous and stream processes.
 
-**All most important security features in only one module.**
+**All most important crypto features in only one module.**
 
 ## Table of contents
 
+* [Using http module inside Hapiness application](#using-http-module-inside-hapiness-application)
+    * [Yarn or NPM it in your package.json](#yarn-or-npm-it-in-your-packagejson)
+    * [Import CryptoModule](#import-cryptomodule)
+    * [Use it anywhere](#use-it-anywhere)
+* [API in Detail](#api-in-detail)
+* [Contributing](#contributing)
+* [Change History](#change-history)
 * [Maintainers](#maintainers)
 * [License](#license)
+
+## Using http module inside Hapiness application
+
+### `yarn` or `npm` it in your `package.json`
+
+```bash
+$ npm install --save @hapiness/crypto
+
+or
+
+$ yarn add @hapiness/crypto
+```
+
+```javascript
+"dependencies": {
+    "@hapiness/crypto": "^1.0.0-rc.6",
+    "@hapiness/crypto": "^1.0.0-rc.6",
+    //...
+}
+//...
+```
+
+### import `CryptoModule`
+
+```javascript
+import { HapinessModule } from '@hapiness/core';
+import { CryptoModule } from '@hapiness/crypto';
+
+@HapinessModule({
+    version: '1.0.0',
+    declarations: [
+        LibWithCrypto
+    ],
+    imports: [
+        CryptoModule
+    ]
+})
+class HapinessModuleNeedsCryptoModule {}
+```
+
+### use it anywhere
+
+You can use `AESService`, `HashService`, `PEMService`, `RandomstringService` and `RSAService` anywhere in your module with **dependency injection**.
+
+```javascript
+import { Lib } from '@hapiness/core';
+import { RSAService, NodeRSA } from '@hapiness/crypto';
+
+@Lib()
+class LibWithCrypto {
+    constructor(private _rsaService: RSAService) {}
+    
+    createRsaKey(): void {
+        this._rsaService.createKey().subscribe(
+            (k: NodeRSA) => console.log(k), // Show NodeRSA instance in console
+            e => console.error(e) // Show error in console
+        );
+    }
+}
+```
+
+[Back to top](#table-of-contents)
+
+## API in Detail
+
+We implemented some services and to see their details go to documentation folder:
+
+* [./documentation/AESService.md](https://github.com/hapinessjs/crypto-module/blob/master/documentation/AESService.md)
+* [./documentation/HashService.md](https://github.com/hapinessjs/crypto-module/blob/master/documentation/HashService.md)
+* [./documentation/PEMService.md](https://github.com/hapinessjs/crypto-module/blob/master/documentation/PEMService.md)
+* [./documentation/RandomstringService.md](https://github.com/hapinessjs/crypto-module/blob/master/documentation/RandomstringService.md)
+* [./documentation/RSAService.md](https://github.com/hapinessjs/crypto-module/blob/master/documentation/RSAService.md)
+
+[Back to top](#table-of-contents)
+
+## Contributing
+
+To set up your development environment:
+
+1. clone the repo to your workspace,
+2. in the shell `cd` to the main folder,
+3. hit `npm or yarn install`,
+4. run `npm or yarn run test`.
+    * It will lint the code and execute all tests. 
+    * The test coverage report can be viewed from `./coverage/lcov-report/index.html`.
+
+[Back to top](#table-of-contents)
+
+## Change History
+
+* v1.0.0-rc.6 (2017-07-28)
+    * Implementation of `CryptoModule` with `AESService`, `HashService`, `PEMService`, `RandomstringService` and `RSAService`
+    * Implementation of `Observable's` operators for `AESService` and `RSAService` features.
+    * Related tests.
+    * Documentation.
+    * Module version related to core version.
 
 ## Maintainers
 
