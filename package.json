@@ -2,8 +2,8 @@
     "name": "@hapiness/crypto",
     "version": "1.0.0-rc.6",
     "description": "Crypto module provides some functions for security features like AES key, Key pair, RSA key, PKCS12, Certificate, PEM and more",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "main": "index.js",
+    "types": "index.d.ts",
     "private": false,
     "scripts": {
         "test": "make test",
