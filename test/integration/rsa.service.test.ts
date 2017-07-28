@@ -14,7 +14,7 @@ import 'rxjs/add/operator/mergeMap';
 import { Buffer } from 'buffer';
 
 // element to test
-import { RSAService } from '../../src';
+import { RSAService, NodeRSA } from '../../src';
 import '../../src/observable/add/rsa/importKey';
 import '../../src/observable/add/rsa/exportKey';
 import '../../src/observable/add/rsa/isPrivate';
@@ -29,7 +29,6 @@ import '../../src/observable/add/rsa/decryptPrivate';
 import '../../src/observable/add/rsa/decryptPublic';
 import '../../src/observable/add/rsa/sign';
 import '../../src/observable/add/rsa/verify';
-import * as NodeRSA from 'node-rsa';
 
 @suite('- Integration RSAServiceTest file')
 class RSAServiceTest {

@@ -49,4 +49,4 @@ export class RSAService {
 /**
  * Export rsa interfaces
  */
-export { KeyBits, Key, Format, Options, Encoding, Data };
+export { NodeRSA, KeyBits, Key, Format, Options, Encoding, Data };
