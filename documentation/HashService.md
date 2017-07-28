@@ -41,12 +41,12 @@ class HapinessModuleNeedsCryptoModule {}
 ## Table of contents
 
 * [API in Detail](#api-in-detail)
-    * [.generate(data,salt,iterations,keylen,digest)](#generatedata-salt-iterations-keylen-digest)
+    * [.generate(data, salt, iterations, keylen, digest)](#generatedata-salt-iterations-keylen-digest)
 * [Change History](#change-history)
 
 ## API in Detail
 
-### `.generate(data,salt,iterations,keylen,digest)`
+### `.generate(data, salt, iterations, keylen, digest)`
 
 Provides an asynchronous Password-Based Key Derivation Function 2 (PBKDF2) implementation.
 

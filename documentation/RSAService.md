@@ -42,21 +42,21 @@ class HapinessModuleNeedsCryptoModule {}
 
 * [API in Detail](#api-in-detail)
     * [.createKey([keyBits])](#createkeykeyBits)
-    * [.loadKey(key[,format,options])](#loadkeykey-format-options)
-    * [.importKey(key[,format])](#importkeykey-format)
-    * [.generateKeyPair([bits,exponent])](#generatekeypairbits-exponent)
+    * [.loadKey(key[, format, options])](#loadkeykey-format-options)
+    * [.importKey(key[, format])](#importkeykey-format)
+    * [.generateKeyPair([bits, exponent])](#generatekeypairbits-exponent)
     * [.exportKey([format])](#exportkeyformat)
     * [.isPrivate()](#isprivate)
     * [.isPublic([strict])](#ispublicstrict)
     * [.isEmptyKey()](#isemptykey)
     * [.getKeySize()](#getkeysize)
     * [.getMaxMessageSize()](#getmaxmessagesize)
-    * [.encryptPublic(data[,encoding,sourceEncoding])](#encryptpublicdata-encoding-sourceencoding)
-    * [.encryptPrivate(data[,encoding,sourceEncoding])](#encryptprivatedata-encoding-sourceencoding)
-    * [.decryptPublic(data[,encoding])](#decryptpublicdata-encoding)
-    * [.decryptPrivate(data[,encoding])](#decryptprivatedata-encoding)
-    * [.sign(data[,encoding,sourceEncoding])](#signdata-encoding-sourceencoding)
-    * [.verify(data,signature[,sourceEncoding,signatureEncoding])](#verifydata-signature-sourceencoding-signatureencoding)
+    * [.encryptPublic(data[, encoding, sourceEncoding])](#encryptpublicdata-encoding-sourceencoding)
+    * [.encryptPrivate(data[, encoding, sourceEncoding])](#encryptprivatedata-encoding-sourceencoding)
+    * [.decryptPublic(data[, encoding])](#decryptpublicdata-encoding)
+    * [.decryptPrivate(data[, encoding])](#decryptprivatedata-encoding)
+    * [.sign(data[, encoding, sourceEncoding])](#signdata-encoding-sourceencoding)
+    * [.verify(data,signature[, sourceEncoding, signatureEncoding])](#verifydata-signature-sourceencoding-signatureencoding)
 * [Parameters types in detail](#parameters-types-in-detail)
     * [Key](#key)
     * [KeyComponents](#keycomponents)
@@ -99,7 +99,7 @@ this._rsaService.createKey({b: 512})
 ```
 [Back to top](#table-of-contents)
 
-### `.loadKey(key[,format,options])`
+### `.loadKey(key[, format, options])`
 
 Load `key` from `string`, `buffer` or `components`.
 
@@ -125,7 +125,7 @@ this._rsaService.loadKey(
 ```
 [Back to top](#table-of-contents)
 
-### `.importKey(key[,format])`
+### `.importKey(key[, format])`
 
 Import `key` from `PEM string`, `PEM/DER Buffer` or `components`. This method is an `Observable's` `operator`.
 
@@ -154,7 +154,7 @@ this._rsaService.createKey().importKey(
 ```
 [Back to top](#table-of-contents)
 
-### `.generateKeyPair([bits,exponent])`
+### `.generateKeyPair([bits, exponent])`
 
 Generate new `RSA Key Pair` in pure `Javascript`. We advise to use `PEMService.createKeyPair()` instead of. This method is an `Observable's` `operator`.
 
@@ -353,7 +353,7 @@ this._rsaService.loadKey(
 ```
 [Back to top](#table-of-contents)
 
-### `.encryptPublic(data[,encoding,sourceEncoding])`
+### `.encryptPublic(data[, encoding, sourceEncoding])`
 
 Encrypting data method with `public key`. This method is an `Observable's` `operator`.
 
@@ -384,7 +384,7 @@ this._rsaService.loadKey(
 ```
 [Back to top](#table-of-contents)
 
-### `.encryptPrivate(data[,encoding,sourceEncoding])`
+### `.encryptPrivate(data[, encoding, sourceEncoding])`
 
 Encrypting data method with `private key`. This method is an `Observable's` `operator`.
 
@@ -415,7 +415,7 @@ this._rsaService.loadKey(
 ```
 [Back to top](#table-of-contents)
 
-### `.decryptPublic(data[,encoding])`
+### `.decryptPublic(data[, encoding])`
 
 Decrypting data method with `public key`. This method is an `Observable's` `operator`.
 
@@ -445,7 +445,7 @@ this._rsaService.loadKey(
 ```
 [Back to top](#table-of-contents)
 
-### `.decryptPrivate(data[,encoding])`
+### `.decryptPrivate(data[, encoding])`
 
 Decrypting data method with `private key`. This method is an `Observable's` `operator`.
 
@@ -475,7 +475,7 @@ this._rsaService.loadKey(
 ```
 [Back to top](#table-of-contents)
 
-### `.sign(data[,encoding,sourceEncoding])`
+### `.sign(data[, encoding, sourceEncoding])`
 
 Signing data method with `private key`. This method is an `Observable's` `operator`.
 
@@ -506,7 +506,7 @@ this._rsaService.loadKey(
 ```
 [Back to top](#table-of-contents)
 
-### `.verify(data,signature[,sourceEncoding,signatureEncoding])`
+### `.verify(data, signature[, sourceEncoding, signatureEncoding])`
 
 Verifying signed data method with `public key`. This method is an `Observable's` `operator`.
 
@@ -597,21 +597,21 @@ Format string composed of several parts: `scheme-[key_type]-[output_type]`
 
 * Implementation of all methods (2017-07-28)
     * [.createKey([keyBits])](#createkeykeyBits)
-    * [.loadKey(key[,format,options])](#loadkeykey-format-options)
-    * [.importKey(key[,format])](#importkeykey-format)
-    * [.generateKeyPair([bits,exponent])](#generatekeypairbits-exponent)
+    * [.loadKey(key[, format, options])](#loadkeykey-format-options)
+    * [.importKey(key[, format])](#importkeykey-format)
+    * [.generateKeyPair([bits, exponent])](#generatekeypairbits-exponent)
     * [.exportKey([format])](#exportkeyformat)
     * [.isPrivate()](#isprivate)
     * [.isPublic([strict])](#ispublicstrict)
     * [.isEmptyKey()](#isemptykey)
     * [.getKeySize()](#getkeysize)
     * [.getMaxMessageSize()](#getmaxmessagesize)
-    * [.encryptPublic(data[,encoding,sourceEncoding])](#encryptpublicdata-encoding-sourceencoding)
-    * [.encryptPrivate(data[,encoding,sourceEncoding])](#encryptprivatedata-encoding-sourceencoding)
-    * [.decryptPublic(data[,encoding])](#decryptpublicdata-encoding)
-    * [.decryptPrivate(data[,encoding])](#decryptprivatedata-encoding)
-    * [.sign(data[,encoding,sourceEncoding])](#signdata-encoding-sourceencoding)
-    * [.verify(data,signature[,sourceEncoding,signatureEncoding])](#verifydata-signature-sourceencoding-signatureencoding)
+    * [.encryptPublic(data[, encoding, sourceEncoding])](#encryptpublicdata-encoding-sourceencoding)
+    * [.encryptPrivate(data[, encoding, sourceEncoding])](#encryptprivatedata-encoding-sourceencoding)
+    * [.decryptPublic(data[, encoding])](#decryptpublicdata-encoding)
+    * [.decryptPrivate(data[, encoding])](#decryptprivatedata-encoding)
+    * [.sign(data[, encoding, sourceEncoding])](#signdata-encoding-sourceencoding)
+    * [.verify(data, signature[, sourceEncoding, signatureEncoding])](#verifydata-signature-sourceencoding-signatureencoding)
     
 [Back to top](#table-of-contents)
 

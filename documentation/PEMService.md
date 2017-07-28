@@ -41,19 +41,19 @@ class HapinessModuleNeedsCryptoModule {}
 ## Table of contents
 
 * [API in Detail](#api-in-detail)
-    * [.createPrivateKey([keyBitsize,options])](#createprivatekeykeybitsize-options)
+    * [.createPrivateKey([keyBitsize, options])](#createprivatekeykeybitsize-options)
     * [.createDhparam([keyBitsize])](#createdhparamkeybitsize)
     * [.createCSR([options])](#createcsroptions)
     * [.createCertificate([options])](#createcertificateoptions)
     * [.readCertificateInfo(certificate)](#readcertificateinfocertificate)
     * [.getPublicKey(certificate)](#getpublickeycertificate)
-    * [.createKeyPair([keyBitsize,options])](#createkeypairkeybitsize-options)
-    * [.getFingerprint(certificate[,hash])](#getfingerprintcertificate-hash)
-    * [.getModulus(certificate[,password])](#getmoduluscertificate-password)
+    * [.createKeyPair([keyBitsize, options])](#createkeypairkeybitsize-options)
+    * [.getFingerprint(certificate[, hash])](#getfingerprintcertificate-hash)
+    * [.getModulus(certificate[, password])](#getmoduluscertificate-password)
     * [.getDhparamInfo(dh)](#getdhparaminfodh)
-    * [.createPkcs12(key,certificate,password[,options])](#createpkcs12key-certificate-password-options)
-    * [.readPkcs12(bufferOrPath[,options])](#readpkcs12bufferorpath-options)
-    * [.verifySigningChain(certificate,ca)](#verifysigningchaincertificate-ca)
+    * [.createPkcs12(key,certificate,password[, options])](#createpkcs12key-certificate-password-options)
+    * [.readPkcs12(bufferOrPath[, options])](#readpkcs12bufferorpath-options)
+    * [.verifySigningChain(certificate, ca)](#verifysigningchaincertificate-ca)
 * [Parameters types in detail](#parameters-types-in-detail)
     * [PrivateKeyCreationOptions](#privatekeycreationoptions)
     * [PrivateKeyCipher](#privatekeycipher)
@@ -65,7 +65,7 @@ class HapinessModuleNeedsCryptoModule {}
 
 ## API in Detail
 
-### `.createPrivateKey([keyBitsize,options])`
+### `.createPrivateKey([keyBitsize, options])`
 
 Creates `private` key.
 
@@ -190,7 +190,7 @@ this._pemService.getPublicKey([CERTIFICATE])
 ```
 [Back to top](#table-of-contents)
 
-### `.createKeyPair([keyBitsize,options])`
+### `.createKeyPair([keyBitsize, options])`
 
 Creates a `private key` and related `public key`.
 
@@ -211,7 +211,7 @@ this._pemService.createKeyPair()
 ```
 [Back to top](#table-of-contents)
 
-### `.getFingerprint(certificate[,hash])`
+### `.getFingerprint(certificate[, hash])`
 
 Gets the `fingerprint` for a `certificate`.
 
@@ -232,7 +232,7 @@ this._pemService.getFingerprint([CERTIFICATE])
 ```
 [Back to top](#table-of-contents)
 
-### `.getModulus(certificate[,password])`
+### `.getModulus(certificate[, password])`
 
 Gets the `modulus` from a `certificate`, a `CSR` or a `private key`.
 
@@ -273,7 +273,7 @@ this._pemService.getDhparamInfo([DH])
 ```
 [Back to top](#table-of-contents)
 
-### `.createPkcs12(key,certificate,password[,options])`
+### `.createPkcs12(key, certificate, password[, options])`
 
 Exports `private key` and `certificate` to a `PKCS12 keystore`.
 
@@ -296,7 +296,7 @@ this._pemService.createPkcs12([KEY], [CERTIFICATE], [PASSWORD])
 ```
 [Back to top](#table-of-contents)
 
-### `.readPkcs12(bufferOrPath[,options])`
+### `.readPkcs12(bufferOrPath[, options])`
 
 Reads `private key` and `certificate` from a `PKCS12 keystore`.
 
@@ -317,7 +317,7 @@ this._pemService.readPkcs12([BUFFER])
 ```
 [Back to top](#table-of-contents)
 
-### `.verifySigningChain(certificate,ca)`
+### `.verifySigningChain(certificate, ca)`
 
 Verifies the `signing chain` of the passed `certificate` for given `ca`.
 
@@ -388,19 +388,19 @@ this._pemService.verifySigningChain([BUFFER], [CA])
 ## Change History
 
 * Implementation of all methods (2017-07-28)
-    * [.createPrivateKey([keyBitsize,options])](#createprivatekeykeybitsize-options)
+    * [.createPrivateKey([keyBitsize, options])](#createprivatekeykeybitsize-options)
     * [.createDhparam([keyBitsize])](#createdhparamkeybitsize)
     * [.createCSR([options])](#createcsroptions)
     * [.createCertificate([options])](#createcertificateoptions)
     * [.readCertificateInfo(certificate)](#readcertificateinfocertificate)
     * [.getPublicKey(certificate)](#getpublickeycertificate)
-    * [.createKeyPair([keyBitsize,options])](#createkeypairkeybitsize-options)
-    * [.getFingerprint(certificate[,hash])](#getfingerprintcertificate-hash)
-    * [.getModulus(certificate[,password])](#getmoduluscertificate-password)
+    * [.createKeyPair([keyBitsize, options])](#createkeypairkeybitsize-options)
+    * [.getFingerprint(certificate[, hash])](#getfingerprintcertificate-hash)
+    * [.getModulus(certificate[, password])](#getmoduluscertificate-password)
     * [.getDhparamInfo(dh)](#getdhparaminfodh)
-    * [.createPkcs12(key,certificate,password[,options])](#createpkcs12key-certificate-password-options)
-    * [.readPkcs12(bufferOrPath[,options])](#readpkcs12bufferorpath-options)
-    * [.verifySigningChain(certificate,ca)](#verifysigningchaincertificate-ca)
+    * [.createPkcs12(key, certificate, password[, options])](#createpkcs12key-certificate-password-options)
+    * [.readPkcs12(bufferOrPath[, options])](#readpkcs12bufferorpath-options)
+    * [.verifySigningChain(certificate, ca)](#verifysigningchaincertificate-ca)
     
 [Back to top](#table-of-contents)
 
