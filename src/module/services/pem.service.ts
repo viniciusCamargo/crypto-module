@@ -71,12 +71,12 @@ export interface DhParamInfoResult {
 /**
  * Pkcs12 definition
  */
-export interface Pkcs12Result {
+export interface PKCS12Result {
     pkcs12: any;
 }
 
 @Injectable()
-export class PemService {
+export class PEMService {
     /**
      * Class constructor
      *
@@ -230,11 +230,11 @@ export class PemService {
      * @param {Pkcs12CreationOptions} [options] Optional object of cipher and optional client key password
      *  {cipher:'aes128', clientKeyPassword: 'xxx'}
      *
-     * @return {Observable<Pkcs12Result>} {pkcs12}
+     * @return {Observable<PKCS12Result>} {pkcs12}
      */
-    createPkcs12(key: string, certificate: string, password: string, options?: Pkcs12CreationOptions): Observable<Pkcs12Result> {
+    createPkcs12(key: string, certificate: string, password: string, options?: Pkcs12CreationOptions): Observable<PKCS12Result> {
         return (<(key: string, certificate: string, password: string, options?: Pkcs12CreationOptions) =>
-            Observable<Pkcs12Result>> Observable.bindNodeCallback(pem.createPkcs12))(key, certificate, password, options);
+            Observable<PKCS12Result>> Observable.bindNodeCallback(pem.createPkcs12))(key, certificate, password, options);
     }
 
     /**
@@ -243,11 +243,11 @@ export class PemService {
      * @param {String} bufferOrPath Buffer representation or path to PKCS12 keystore
      * @param {Pkcs12ReadOptions} [options] Optional object of optional keystore and client key passwords
      *
-     * @return {Observable<Pkcs12Result>} {pkcs12}
+     * @return {Observable<PKCS12Result>} {pkcs12}
      */
-    readPkcs12(bufferOrPath: string, options?: Pkcs12ReadOptions): Observable<Pkcs12Result> {
+    readPkcs12(bufferOrPath: string, options?: Pkcs12ReadOptions): Observable<PKCS12Result> {
         return (<(bufferOrPath: string, options?: Pkcs12ReadOptions) =>
-            Observable<Pkcs12Result>> Observable.bindNodeCallback(pem.readPkcs12))(bufferOrPath, options);
+            Observable<PKCS12Result>> Observable.bindNodeCallback(pem.readPkcs12))(bufferOrPath, options);
     }
 
     /**

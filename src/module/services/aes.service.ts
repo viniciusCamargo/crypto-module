@@ -6,13 +6,13 @@ import 'rxjs/add/operator/map';
 /**
  * AES key definition
  */
-export interface AesKeyCreationResult {
+export interface AESKeyCreationResult {
     key: string;
     iv: string;
 }
 
 @Injectable()
-export class AesService {
+export class AESService {
     /**
      * Class constructor
      *
@@ -26,9 +26,9 @@ export class AesService {
      * @param {string | Buffer} password for AES key
      * @param {string | Buffer} salt for AES key
      *
-     * @return {Observable<AesKeyCreationResult>} {key, iv} used to encrypt and decrypt data
+     * @return {Observable<AESKeyCreationResult>} {key, iv} used to encrypt and decrypt data
      */
-    createKey(password: string | Buffer, salt: string | Buffer): Observable<AesKeyCreationResult> {
+    createKey(password: string | Buffer, salt: string | Buffer): Observable<AESKeyCreationResult> {
         // generate derivedKey for this password and salt
         return this._hashService.generate(password, salt, 4096, 48, 'sha256')
             .map((derivedKey: Buffer) => {

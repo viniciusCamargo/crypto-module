@@ -14,14 +14,14 @@ import 'rxjs/add/observable/throw';
 import { Buffer } from 'buffer';
 
 // element to test
-import { AesService, HashService } from '../../src';
+import { AESService, HashService } from '../../src';
 import '../../src/observable/add/aes/encryptWithAesKey';
 import '../../src/observable/add/aes/decryptWithAesKey';
 
-@suite('- Unit AesServiceTest file')
-class AesServiceTest {
+@suite('- Unit AESServiceTest file')
+class AESServiceTest {
     // private property to store service instance
-    private _aesService: AesService;
+    private _aesService: AESService;
     // private property to store mock service instance
     private _hashServiceMock: any;
     // private property to store password
@@ -39,7 +39,7 @@ class AesServiceTest {
      * Function executed before each test
      */
     before() {
-        this._aesService = new AesService(new HashService());
+        this._aesService = new AESService(new HashService());
         this._hashServiceMock = unit.mock(this._aesService['_hashService']);
         this._password = 'P3HQdR35PUQLZ5ioOrsPlxx7QWra7WQl';
         this._salt = 'Kt9V3wgxrhpf8GN3';
@@ -56,25 +56,25 @@ class AesServiceTest {
     }
 
     /**
-     * Test if `AesService` as a `generate` function
+     * Test if `AESService` as a `generate` function
      */
-    @test('- `AesService` must have `createKey` function')
+    @test('- `AESService` must have `createKey` function')
     testAesServiceCreateKey() {
         unit.function(this._aesService.createKey);
     }
 
     /**
-     * Test if `AesService.createKey()` function returns an Observable
+     * Test if `AESService.createKey()` function returns an Observable
      */
-    @test('- `AesService.createKey()` function must return an Observable')
+    @test('- `AESService.createKey()` function must return an Observable')
     testAesServiceCreateKeyObservable() {
         unit.object(this._aesService.createKey(null, null)).isInstanceOf(Observable);
     }
 
     /**
-     * Test if `AesService.createKey()` function returns an Observable with error if AES key parameters are wrong
+     * Test if `AESService.createKey()` function returns an Observable with error if AES key parameters are wrong
      */
-    @test('- `AesService.createKey()` function must return an Observable with error if AES key parameters are wrong')
+    @test('- `AESService.createKey()` function must return an Observable with error if AES key parameters are wrong')
     testAesServiceCreateKeyObservableError(done) {
         this._hashServiceMock.expects('generate').returns(Observable.throw(new Error('Wrong AES key')));
 
@@ -89,9 +89,9 @@ class AesServiceTest {
     }
 
     /**
-     * Test if `AesService.createKey().encryptWithAesKey()` function returns an Observable
+     * Test if `AESService.createKey().encryptWithAesKey()` function returns an Observable
      */
-    @test('- `AesService.createKey().encryptWithAesKey()` function must return an Observable')
+    @test('- `AESService.createKey().encryptWithAesKey()` function must return an Observable')
     testAesServiceEncryptWithAesKeyObservable(done) {
         this._hashServiceMock.expects('generate')
             .returns(Observable.of(
@@ -106,9 +106,9 @@ class AesServiceTest {
     }
 
     /**
-     * Test if `AesService.createKey().decryptWithAesKey()` function returns an Observable
+     * Test if `AESService.createKey().decryptWithAesKey()` function returns an Observable
      */
-    @test('- `AesService.createKey().decryptWithAesKey()` function must return an Observable')
+    @test('- `AESService.createKey().decryptWithAesKey()` function must return an Observable')
     testAesServiceDecryptWithAesKeyObservable(done) {
         this._hashServiceMock.expects('generate')
             .returns(Observable.of(

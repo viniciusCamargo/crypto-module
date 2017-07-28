@@ -12,15 +12,15 @@ import 'rxjs/add/observable/of';
 import { Buffer } from 'buffer';
 
 // element to test
-import { AesService, HashService } from '../../src';
+import { AESService, HashService } from '../../src';
 import '../../src/observable/add/aes/encryptWithAesKey';
 import '../../src/observable/add/aes/decryptWithAesKey';
 import { Observable } from 'rxjs/Observable';
 
-@suite('- Integration AesServiceTest file')
-class AesServiceTest {
+@suite('- Integration AESServiceTest file')
+class AESServiceTest {
     // private property to store service instance
-    private _aesService: AesService;
+    private _aesService: AESService;
     // private property to store password
     private _password: string;
     // private property to store salt
@@ -36,7 +36,7 @@ class AesServiceTest {
      * Function executed before each test
      */
     before() {
-        this._aesService = new AesService(new HashService());
+        this._aesService = new AESService(new HashService());
         this._password = 'P3HQdR35PUQLZ5ioOrsPlxx7QWra7WQl';
         this._salt = 'Kt9V3wgxrhpf8GN3';
     }
@@ -51,18 +51,18 @@ class AesServiceTest {
     }
 
     /**
-     * Test if `AesService.createKey()` function returns an Observable with error if AES key parameters are wrong
+     * Test if `AESService.createKey()` function returns an Observable with error if AES key parameters are wrong
      */
-    @test('- `AesService.createKey()` function must return an Observable with error if AES key parameters are wrong')
+    @test('- `AESService.createKey()` function must return an Observable with error if AES key parameters are wrong')
     testAesServiceCreateKeyObservableError(done) {
         this._aesService.createKey(null, null)
             .subscribe(null, error => unit.object(error).hasProperty('message', 'Pass phrase must be a buffer').when(_ => done()));
     }
 
     /**
-     * Test if `AesService.createKey()` Observable returns AesKeyCreationResult object
+     * Test if `AESService.createKey()` Observable returns AESKeyCreationResult object
      */
-    @test('- `AesService.createKey()` Observable function must return an AesKeyCreationResult object `{key, iv}`')
+    @test('- `AESService.createKey()` Observable function must return an AESKeyCreationResult object `{key, iv}`')
     testAesServiceCreateKeyObservableReturnAesKeyCreationResult(done) {
         this._aesService.createKey(this._password, this._salt)
             .subscribe(aesKeyCreationResult => unit.object(aesKeyCreationResult)
@@ -75,19 +75,19 @@ class AesServiceTest {
     }
 
     /**
-     * Test if `AesService.createKey().encryptWithAesKey()` Observable returns Buffer
+     * Test if `AESService.createKey().encryptWithAesKey()` Observable returns Buffer
      */
-    @test('- `AesService.createKey().encryptWithAesKey()` Observable function must return a Buffer')
+    @test('- `AESService.createKey().encryptWithAesKey()` Observable function must return a Buffer')
     testAesServiceEncryptWithAesKeyObservableReturnBuffer(done) {
         this._aesService.createKey(this._password, this._salt).encryptWithAesKey(new Buffer('data'))
             .subscribe(buffer => unit.object(buffer).isInstanceOf(Buffer).when(_ => done()));
     }
 
     /**
-     * Test if `AesService.createKey().encryptWithAesKey()` Observable returns Buffer and
+     * Test if `AESService.createKey().encryptWithAesKey()` Observable returns Buffer and
      *  his string representation is `a3d4bb8fcb8ec0e24a86cef07a28e3af`
      */
-    @test('- `AesService.createKey().encryptWithAesKey()` Observable function must return a Buffer and his string representation is ' +
+    @test('- `AESService.createKey().encryptWithAesKey()` Observable function must return a Buffer and his string representation is ' +
         '`a3d4bb8fcb8ec0e24a86cef07a28e3af`')
     testAesServiceEncryptWithAesKeyObservableReturnBufferWithStringRepresentationValue(done) {
         this._aesService.createKey(this._password, this._salt).encryptWithAesKey(new Buffer('data'))
@@ -95,19 +95,19 @@ class AesServiceTest {
     }
 
     /**
-     * Test if `AesService.createKey().decryptWithAesKey()` Observable returns Buffer
+     * Test if `AESService.createKey().decryptWithAesKey()` Observable returns Buffer
      */
-    @test('- `AesService.createKey().decryptWithAesKey()` Observable function must return a Buffer')
+    @test('- `AESService.createKey().decryptWithAesKey()` Observable function must return a Buffer')
     testAesServiceDecryptWithAesKeyObservableReturnBuffer(done) {
         this._aesService.createKey(this._password, this._salt).decryptWithAesKey(new Buffer('a3d4bb8fcb8ec0e24a86cef07a28e3af', 'hex'))
             .subscribe(buffer => unit.object(buffer).isInstanceOf(Buffer).when(_ => done()));
     }
 
     /**
-     * Test if `AesService.createKey().decryptWithAesKey()` Observable returns Buffer and
+     * Test if `AESService.createKey().decryptWithAesKey()` Observable returns Buffer and
      *  his string representation is `data`
      */
-    @test('- `AesService.createKey().decryptWithAesKey()` Observable function must return a Buffer and his string representation is ' +
+    @test('- `AESService.createKey().decryptWithAesKey()` Observable function must return a Buffer and his string representation is ' +
         '`data`')
     testAesServiceDecryptWithAesKeyObservableReturnBufferWithStringRepresentationValue(done) {
         this._aesService.createKey(this._password, this._salt).decryptWithAesKey(new Buffer('a3d4bb8fcb8ec0e24a86cef07a28e3af', 'hex'))
@@ -115,17 +115,17 @@ class AesServiceTest {
     }
 
     /**
-     * Test if `AesService.createKey().encryptWithAesKey()` function returns an Observable with error if AES key is wrong
+     * Test if `AESService.createKey().encryptWithAesKey()` function returns an Observable with error if AES key is wrong
      */
-    @test('- `AesService.createKey().encryptWithAesKey()` function must return an Observable with error if AES key is wrong')
+    @test('- `AESService.createKey().encryptWithAesKey()` function must return an Observable with error if AES key is wrong')
     testAesServiceEncryptWithAesKeyObservableError(done) {
         Observable.of({ key: null, iv: null }).encryptWithAesKey(new Buffer('data'))
             .subscribe(null, error => unit.error(error).when(_ => done()));
     }
     /**
-     * Test if `AesService.createKey().decryptWithAesKey()` function returns an Observable with error if AES key is wrong
+     * Test if `AESService.createKey().decryptWithAesKey()` function returns an Observable with error if AES key is wrong
      */
-    @test('- `AesService.createKey().decryptWithAesKey()` function must return an Observable with error if AES key is wrong')
+    @test('- `AESService.createKey().decryptWithAesKey()` function must return an Observable with error if AES key is wrong')
     testAesServiceDecryptWithAesKeyObservableError(done) {
         Observable.of({ key: null, iv: null }).decryptWithAesKey(new Buffer('a3d4bb8fcb8ec0e24a86cef07a28e3af', 'hex'))
             .subscribe(null, error => unit.object(error)

@@ -11,7 +11,7 @@ import * as unit from 'unit.js';
 import { Hapiness, HapinessModule, OnStart } from '@hapiness/core';
 
 // element to test
-import { CryptoModule, PemService, AesService, RSAService, RandomstringService } from '../../src';
+import { CryptoModule, PEMService, AESService, RSAService, RandomstringService } from '../../src';
 
 @suite('- Integration CryptoModuleTest file')
 class CryptoModuleTest {
@@ -32,9 +32,9 @@ class CryptoModuleTest {
     after() {}
 
     /**
-     * Test if `PemService.createPrivateKey()` Observable returns an error if openSSL path is wrong
+     * Test if `PEMService.createPrivateKey()` Observable returns an error if openSSL path is wrong
      */
-    @test('- check if `PemService.createPrivateKey()` Observable returns an error if openSSL path is wrong')
+    @test('- check if `PEMService.createPrivateKey()` Observable returns an error if openSSL path is wrong')
     testPemServiceFunctionErrorWithWrongConfig(done) {
         @HapinessModule({
             version: '1.0.0',
@@ -43,7 +43,7 @@ class CryptoModuleTest {
             ]
         })
         class ModuleTest implements OnStart {
-            constructor(private _pemService: PemService) {}
+            constructor(private _pemService: PEMService) {}
 
             onStart(): void {
                 this._pemService.createPrivateKey().subscribe(null, e => unit.error(e))
@@ -54,9 +54,9 @@ class CryptoModuleTest {
     }
 
     /**
-     * Test if injected `_pemService` is an instance of `PemService`
+     * Test if injected `_pemService` is an instance of `PEMService`
      */
-    @test('- check if injected `_pemService` is an instance of `PemService`')
+    @test('- check if injected `_pemService` is an instance of `PEMService`')
     testPemServiceInjected(done) {
         @HapinessModule({
             version: '1.0.0',
@@ -65,10 +65,10 @@ class CryptoModuleTest {
             ]
         })
         class ModuleTest implements OnStart {
-            constructor(private _pemService: PemService) {}
+            constructor(private _pemService: PEMService) {}
 
             onStart(): void {
-                unit.object(this._pemService).isInstanceOf(PemService);
+                unit.object(this._pemService).isInstanceOf(PEMService);
             }
         }
 
@@ -76,9 +76,9 @@ class CryptoModuleTest {
     }
 
     /**
-     * Test if injected `_aesService` is an instance of `AesService`
+     * Test if injected `_aesService` is an instance of `AESService`
      */
-    @test('- check if injected `_aesService` is an instance of `AesService`')
+    @test('- check if injected `_aesService` is an instance of `AESService`')
     testAesServiceInjected(done) {
         @HapinessModule({
             version: '1.0.0',
@@ -87,10 +87,10 @@ class CryptoModuleTest {
             ]
         })
         class ModuleTest implements OnStart {
-            constructor(private _aesService: AesService) {}
+            constructor(private _aesService: AESService) {}
 
             onStart(): void {
-                unit.object(this._aesService).isInstanceOf(AesService);
+                unit.object(this._aesService).isInstanceOf(AESService);
             }
         }
 
