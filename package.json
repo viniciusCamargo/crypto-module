@@ -1,6 +1,6 @@
 {
     "name": "@hapiness/crypto",
-    "version": "1.0.0-rc.6.1",
+    "version": "1.0.0-rc.6.2",
     "description": "Crypto module provides some functions for security features like AES key, Key pair, RSA key, PKCS12, Certificate, PEM and more",
     "main": "index.js",
     "types": "index.d.ts",
@@ -29,6 +29,7 @@
         "AES",
         "PKCS12",
         "KeyPair",
+        "JWT",
         "Hapiness",
         "Framework",
         "NodeJS",
@@ -77,10 +78,12 @@
     },
     "homepage": "https://github.com/hapinessjs/crypto-module#readme",
     "dependencies": {
+        "@types/jsonwebtoken": "^7.2.2",
         "@types/node": "^8.0.17",
         "@types/node-rsa": "^0.4.0",
         "@types/pem": "^1.9.2",
         "@types/randomstring": "^1.1.6",
+        "jsonwebtoken": "^7.4.1",
         "node-rsa": "^0.4.2",
         "pem": "^1.9.7",
         "randomstring": "^1.1.5"

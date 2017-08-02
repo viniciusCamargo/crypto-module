@@ -1,15 +1,16 @@
 import { CoreModuleWithProviders, HapinessModule } from '@hapiness/core';
-import { RandomstringService, AESService, PEMService, RSAService, HashService } from './services';
+import { RandomstringService, AESService, PEMService, RSAService, HashService, JWTService } from './services';
 import { CRYPTO_CONFIG, CryptoConfig } from './config';
 
 @HapinessModule({
-    version: '1.0.0-rc.6',
+    version: '1.0.0-rc.6.2',
     exports: [
         RandomstringService,
         AESService,
         PEMService,
         RSAService,
-        HashService
+        HashService,
+        JWTService
     ]
 })
 export class CryptoModule {

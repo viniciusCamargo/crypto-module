@@ -17,6 +17,7 @@
             "node-rsa",
             "pem",
             "randomstring",
+            "jsonwebtoken",
             "fs-extra"
         ],
         "lib": [

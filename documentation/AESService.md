@@ -41,9 +41,9 @@ class HapinessModuleNeedsCryptoModule {}
 ## Table of contents
 
 * [API in Detail](#api-in-detail)
-    * [.createKey(password, salt)](#createKeypassword-salt)
-    * [.encryptWithAesKey(data)](#encryptWithAesKeydata)
-    * [.decryptWithAesKey(data)](#decryptWithAesKeydata)
+    * [.createKey(password, salt)](#createkeypassword-salt)
+    * [.encryptWithAesKey(data)](#encryptwithaeskeydata)
+    * [.decryptWithAesKey(data)](#decryptwithaeskeydata)
 * [Change History](#change-history)
 
 ## API in Detail
@@ -122,9 +122,9 @@ this._aesService.createKey('P3HQdR35PUQLZ5ioOrsPlxx7QWra7WQl', 'Kt9V3wgxrhpf8GN3
 ## Change History
 
 * Implementation of all methods (2017-07-28)
-    * [.createKey(password, salt)](#createKeypassword-salt)
-    * [.encryptWithAesKey(data)](#encryptWithAesKeydata)
-    * [.decryptWithAesKey(data)](#decryptWithAesKeydata)
+    * [.createKey(password, salt)](#createkeypassword-salt)
+    * [.encryptWithAesKey(data)](#encryptwithaeskeydata)
+    * [.decryptWithAesKey(data)](#decryptwithaeskeydata)
     
 [Back to top](#table-of-contents)
 

@@ -11,7 +11,7 @@ import * as unit from 'unit.js';
 import { Hapiness, HapinessModule, OnStart } from '@hapiness/core';
 
 // element to test
-import { CryptoModule, PEMService, AESService, RSAService, RandomstringService } from '../../src';
+import { CryptoModule, PEMService, AESService, RSAService, RandomstringService, JWTService } from '../../src';
 
 @suite('- Integration CryptoModuleTest file')
 class CryptoModuleTest {
@@ -135,6 +135,28 @@ class CryptoModuleTest {
 
             onStart(): void {
                 unit.object(this._randomstringService).isInstanceOf(RandomstringService);
+            }
+        }
+
+        Hapiness.bootstrap(ModuleTest).then(_ => done());
+    }
+
+    /**
+     * Test if injected `_jwtService` is an instance of `JWTService`
+     */
+    @test('- check if injected `_jwtService` is an instance of `JWTService`')
+    testJWTServiceInjected(done) {
+        @HapinessModule({
+            version: '1.0.0',
+            imports: [
+                CryptoModule
+            ]
+        })
+        class ModuleTest implements OnStart {
+            constructor(private _jwtService: JWTService) {}
+
+            onStart(): void {
+                unit.object(this._jwtService).isInstanceOf(JWTService);
             }
         }
 
