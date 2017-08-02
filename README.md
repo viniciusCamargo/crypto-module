@@ -33,9 +33,9 @@
 
 # Crypto Module
 
-`Crypto` module for the [Hapiness](https://github.com/hapinessjs/hapiness) framework provides some functions for security features like `AES key`, `Key pair`, `PKCS12`, `RSA key`, `Certificate` and more.
+`Crypto` module for the [Hapiness](https://github.com/hapinessjs/hapiness) framework provides some functions for security features like `AES key`, `Key pair`, `PKCS12`, `RSA key`, `Certificate`, `JWT` and more.
 
-We use existing node modules to provide these functions: [NodeRSA](https://github.com/rzcoder/node-rsa), [PEM](https://github.com/Dexus/pem) and [RandomString](https://github.com/klughammer/node-randomstring) but we add `Observable` feature for asynchronous and stream processes.
+We use existing node modules to provide these functions: [NodeRSA](https://github.com/rzcoder/node-rsa), [PEM](https://github.com/Dexus/pem), [JWT](https://github.com/auth0/node-jsonwebtoken) and [RandomString](https://github.com/klughammer/node-randomstring) but we add `Observable` feature for asynchronous and stream processes.
 
 **All most important crypto features in only one module.**
 
@@ -66,7 +66,7 @@ $ yarn add @hapiness/core @hapiness/crypto rxjs
 ```javascript
 "dependencies": {
     "@hapiness/core": "^1.0.0-rc.6",
-    "@hapiness/crypto": "^1.0.0-rc.6",
+    "@hapiness/crypto": "^1.0.0-rc.6.2",
     "rxjs": "^5.4.2",
     //...
 }
@@ -120,6 +120,7 @@ We implemented some services and to see their details go to documentation folder
 
 * [./documentation/AESService.md](https://github.com/hapinessjs/crypto-module/blob/master/documentation/AESService.md)
 * [./documentation/HashService.md](https://github.com/hapinessjs/crypto-module/blob/master/documentation/HashService.md)
+* [./documentation/JWTService.md](https://github.com/hapinessjs/crypto-module/blob/master/documentation/JWTService.md)
 * [./documentation/PEMService.md](https://github.com/hapinessjs/crypto-module/blob/master/documentation/PEMService.md)
 * [./documentation/RandomstringService.md](https://github.com/hapinessjs/crypto-module/blob/master/documentation/RandomstringService.md)
 * [./documentation/RSAService.md](https://github.com/hapinessjs/crypto-module/blob/master/documentation/RSAService.md)
@@ -141,6 +142,10 @@ To set up your development environment:
 
 ## Change History
 
+* v1.0.0-rc.6.2 (2017-08-02)
+    * Implementation of `JWTService`
+    * Related tests.
+    * Documentation.
 * v1.0.0-rc.6 (2017-07-28)
     * Implementation of `CryptoModule` with `AESService`, `HashService`, `PEMService`, `RandomstringService` and `RSAService`
     * Implementation of `Observable's` operators for `AESService` and `RSAService` features.
