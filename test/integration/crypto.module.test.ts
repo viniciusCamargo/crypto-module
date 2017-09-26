@@ -14,7 +14,7 @@ import { Hapiness, HapinessModule, OnStart } from '@hapiness/core';
 import { CryptoModule, PEMService, AESService, RSAService, RandomstringService, JWTService } from '../../src';
 
 @suite('- Integration CryptoModuleTest file')
-class CryptoModuleTest {
+export class CryptoModuleTest {
     /**
      * Class constructor
      */

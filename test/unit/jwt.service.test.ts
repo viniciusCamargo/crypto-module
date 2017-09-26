@@ -14,7 +14,7 @@ import { Observable } from 'rxjs/Observable';
 import { JWTService } from '../../src';
 
 @suite('- Unit JWTServiceTest file')
-class JWTServiceTest {
+export class JWTServiceTest {
     // private property to store service instance
     private _jwtService: JWTService;
 

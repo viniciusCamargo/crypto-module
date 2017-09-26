@@ -12,7 +12,7 @@ import * as unit from 'unit.js';
 import { RandomstringService } from '../../src';
 
 @suite('- Integration RandomstringServiceTest file')
-class RandomstringServiceTest {
+export class RandomstringServiceTest {
     // private property to store service instance
     private _randomstringService: RandomstringService;
     /**

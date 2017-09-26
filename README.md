@@ -65,9 +65,9 @@ $ yarn add @hapiness/core @hapiness/crypto rxjs
 
 ```javascript
 "dependencies": {
-    "@hapiness/core": "^1.0.0-rc.6",
-    "@hapiness/crypto": "^1.0.0-rc.6.2",
-    "rxjs": "^5.4.2",
+    "@hapiness/core": "^1.0.0-rc.7",
+    "@hapiness/crypto": "^1.0.0-rc.7",
+    "rxjs": "^5.4.3",
     //...
 }
 //...
@@ -93,7 +93,7 @@ class HapinessModuleNeedsCryptoModule {}
 
 ### use it anywhere
 
-You can use `AESService`, `HashService`, `PEMService`, `RandomstringService` and `RSAService` anywhere in your module with **dependency injection**.
+You can use `AESService`, `HashService`, `PEMService`, `RandomstringService`, `JWTService` and `RSAService` anywhere in your module with **dependency injection**.
 
 ```javascript
 import { Lib } from '@hapiness/core';
@@ -142,6 +142,13 @@ To set up your development environment:
 
 ## Change History
 
+* v1.0.0-rc.7 (2017-09-26)
+    * Implementation of `PemService.checkPkcs12()` and `PemService.checkCertificate()`.
+    * Fix all operators related to latest `rxjs` version.
+    * Related tests.
+    * Latest packages' versions.
+    * Documentation.
+    * Module version related to core version.
 * v1.0.0-rc.6.2 (2017-08-02)
     * Implementation of `JWTService`
     * Related tests.
@@ -157,7 +164,7 @@ To set up your development environment:
 
 <table>
     <tr>
-        <td colspan="4" align="center"><a href="https://www.tadaweb.com"><img src="https://tadaweb.com/images/tadaweb/logo.png" width="117" alt="tadaweb" /></a></td>
+        <td colspan="4" align="center"><a href="https://www.tadaweb.com"><img src="http://bit.ly/2xHQkTi" width="117" alt="tadaweb" /></a></td>
     </tr>
     <tr>
         <td align="center"><a href="https://github.com/Juneil"><img src="https://avatars3.githubusercontent.com/u/6546204?v=3&s=117" width="117"/></a></td>

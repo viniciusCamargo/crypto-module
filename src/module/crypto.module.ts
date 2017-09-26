@@ -3,7 +3,7 @@ import { RandomstringService, AESService, PEMService, RSAService, HashService, J
 import { CRYPTO_CONFIG, CryptoConfig } from './config';
 
 @HapinessModule({
-    version: '1.0.0-rc.6.2',
+    version: '1.0.0-rc.7',
     exports: [
         RandomstringService,
         AESService,

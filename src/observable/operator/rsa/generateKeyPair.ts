@@ -8,24 +8,27 @@ import { Subscriber } from 'rxjs/Subscriber';
  * @param bits Key size in bits. 2048 by default.
  * @param exponent public exponent. 65537 by default.
  *
- * @return {Observable<T>|WebSocketSubject<T>}
+ * @return {Observable<NodeRSA>}
  */
-export function generateKeyPair<T>(bits?: number, exponent?: number): Observable<T> {
-    return this.lift(new GenerateKeyPairOperator(this, bits, exponent));
+export function generateKeyPair<NodeRSA>(bits?: number, exponent?: number): Observable<NodeRSA> {
+    return higherOrder<NodeRSA>(bits, exponent)(this);
+}
+
+function higherOrder<NodeRSA>(bits?: number, exponent?: number): (source: Observable<NodeRSA>) => Observable<NodeRSA> {
+    return (source: Observable<NodeRSA>) => <Observable<NodeRSA>> source.lift(new GenerateKeyPairOperator(bits, exponent));
 }
 
 /**
  * Operator class definition
  */
-class GenerateKeyPairOperator<T> implements Operator<T, T> {
+class GenerateKeyPairOperator<NodeRSA> implements Operator<NodeRSA, NodeRSA> {
     /**
      * Class constructor
      *
-     * @param _source subscriber source
      * @param _bits Key size in bits. 2048 by default.
      * @param _exponent public exponent. 65537 by default.
      */
-    constructor(private _source: Observable<T>, private _bits?: number, private _exponent?: number) {
+    constructor(private _bits?: number, private _exponent?: number) {
     }
 
     /**
@@ -36,44 +39,40 @@ class GenerateKeyPairOperator<T> implements Operator<T, T> {
      *
      * @return {AnonymousSubscription|Subscription|Promise<PushSubscription>|TeardownLogic}
      */
-    call(subscriber: Subscriber<T>, source: any): any {
-        return source.subscribe(new GenerateKeyPairSubscriber(subscriber, this._source, this._bits, this._exponent));
+    call(subscriber: Subscriber<NodeRSA>, source: Observable<NodeRSA>): any {
+        return source.subscribe(new GenerateKeyPairSubscriber(subscriber, this._bits, this._exponent));
     }
 }
 
 /**
  * Operator subscriber class definition
  */
-class GenerateKeyPairSubscriber<T> extends Subscriber<T> {
+class GenerateKeyPairSubscriber<NodeRSA> extends Subscriber<NodeRSA> {
     /**
      * Class constructor
      *
      * @param destination subscriber destination
-     * @param _source subscriber source
      * @param _bits Key size in bits. 2048 by default.
      * @param _exponent public exponent. 65537 by default.
      */
-    constructor(destination: Subscriber<T>, private _source: Observable<T>, private _bits?: number, private _exponent?: number) {
+    constructor(destination: Subscriber<NodeRSA>, private _bits?: number, private _exponent?: number) {
         super(destination);
     }
 
     /**
      * Function to send result to next subscriber
      *
-     * @param value result for next subscriber
+     * @param nodeRSA object from previous subscriber
      *
      * @private
      */
-    protected _next(value: T): void {
-        this._source.subscribe((nodeRSA) => {
-                try {
-                    (<any> nodeRSA).generateKeyPair(this._bits, this._exponent);
-                    this.destination.next(nodeRSA);
-                    this.destination.complete();
-                } catch (e) {
-                    this.destination.error(e);
-                }
-            }
-        );
+    protected _next(nodeRSA: NodeRSA): void {
+        try {
+            (<any> nodeRSA).generateKeyPair(this._bits, this._exponent);
+            this.destination.next(nodeRSA);
+            this.destination.complete();
+        } catch (e) {
+            this.destination.error(e);
+        }
     }
 }

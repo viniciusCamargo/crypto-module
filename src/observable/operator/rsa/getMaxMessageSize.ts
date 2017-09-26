@@ -1,28 +1,31 @@
 import { Observable } from 'rxjs/Observable';
 import { Operator } from 'rxjs/Operator';
 import { Subscriber } from 'rxjs/Subscriber';
+import * as NodeRSA from 'node-rsa';
 
 /**
  * New observable operator
  *
  * Return max data size for encrypt in bytes.
  *
- * @return {Observable<T>|WebSocketSubject<T>}
+ * @return {Observable<number>}
  */
-export function getMaxMessageSize<T>(): Observable<T> {
-    return this.lift(new GetMaxMessageSizeOperator(this));
+export function getMaxMessageSize<NodeRSA>(): Observable<number> {
+    return higherOrder<NodeRSA>()(this);
+}
+
+function higherOrder<NodeRSA>(): (source: Observable<NodeRSA>) => Observable<number> {
+    return (source: Observable<NodeRSA>) => <Observable<number>> source.lift(new GetMaxMessageSizeOperator());
 }
 
 /**
  * Operator class definition
  */
-class GetMaxMessageSizeOperator<T> implements Operator<T, T> {
+class GetMaxMessageSizeOperator<R> implements Operator<NodeRSA, R> {
     /**
      * Class constructor
-     *
-     * @param _source subscriber source
      */
-    constructor(private _source: Observable<T>) {
+    constructor() {
     }
 
     /**
@@ -33,42 +36,37 @@ class GetMaxMessageSizeOperator<T> implements Operator<T, T> {
      *
      * @return {AnonymousSubscription|Subscription|Promise<PushSubscription>|TeardownLogic}
      */
-    call(subscriber: Subscriber<T>, source: any): any {
-        return source.subscribe(new GetMaxMessageSizeSubscriber(subscriber, this._source));
+    call(subscriber: Subscriber<R>, source: Observable<NodeRSA>): any {
+        return source.subscribe(new GetMaxMessageSizeSubscriber(subscriber));
     }
 }
 
 /**
  * Operator subscriber class definition
  */
-class GetMaxMessageSizeSubscriber<T> extends Subscriber<T> {
+class GetMaxMessageSizeSubscriber<R> extends Subscriber<NodeRSA> {
     /**
      * Class constructor
      *
      * @param destination subscriber destination
-     * @param _source subscriber source
      */
-    constructor(destination: Subscriber<T>, private _source: Observable<T>) {
+    constructor(destination: Subscriber<R>) {
         super(destination);
     }
 
     /**
      * Function to send result to next subscriber
      *
-     * @param value result for next subscriber
+     * @param nodeRSA object from previous subscriber
      *
      * @private
      */
-    protected _next(value: T): void {
-        this._source.subscribe((nodeRSA) => {
-                try {
-                    const k = (<any> nodeRSA).getMaxMessageSize();
-                    this.destination.next(k);
-                    this.destination.complete();
-                } catch (e) {
-                    this.destination.error(e);
-                }
-            }
-        );
+    protected _next(nodeRSA: NodeRSA): void {
+        try {
+            this.destination.next(nodeRSA.getMaxMessageSize());
+            this.destination.complete();
+        } catch (e) {
+            this.destination.error(e);
+        }
     }
 }

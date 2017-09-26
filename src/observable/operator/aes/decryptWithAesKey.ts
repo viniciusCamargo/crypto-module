@@ -3,6 +3,7 @@ import { Operator } from 'rxjs/Operator';
 import { Subscriber } from 'rxjs/Subscriber';
 import { Buffer } from 'buffer';
 import { Decipher, createDecipheriv } from 'crypto';
+import { AESKeyCreationResult } from '../../..';
 
 /**
  * New observable operator
@@ -11,23 +12,26 @@ import { Decipher, createDecipheriv } from 'crypto';
  *
  * @param data {Buffer} - data for decrypting.
  *
- * @return {Observable<T>|WebSocketSubject<T>} Buffer of decrypted data
+ * @return {Observable<Buffer>} Buffer of decrypted data
  */
-export function decryptWithAesKey<T>(data: Buffer): Observable<T> {
-    return this.lift(new DecryptWithAesKeyOperator(this, data));
+export function decryptWithAesKey<AESKeyCreationResult>(this: Observable<AESKeyCreationResult>, data: Buffer): Observable<Buffer>  {
+    return higherOrder<AESKeyCreationResult>(data)(this);
+}
+
+function higherOrder<AESKeyCreationResult>(data: Buffer): (source: Observable<AESKeyCreationResult>) => Observable<Buffer> {
+    return (source: Observable<AESKeyCreationResult>) => <Observable<Buffer>> source.lift(new DecryptWithAesKeyOperator(data));
 }
 
 /**
  * Operator class definition
  */
-class DecryptWithAesKeyOperator<T> implements Operator<T, T> {
+class DecryptWithAesKeyOperator<R> implements Operator<AESKeyCreationResult, R> {
     /**
      * Class constructor
      *
-     * @param _source subscriber source
      * @param _data {Buffer} - data for encrypting.
      */
-    constructor(private _source: Observable<T>, private _data: Buffer) {
+    constructor(private _data: Buffer) {
     }
 
     /**
@@ -38,46 +42,42 @@ class DecryptWithAesKeyOperator<T> implements Operator<T, T> {
      *
      * @return {AnonymousSubscription|Subscription|Promise<PushSubscription>|TeardownLogic}
      */
-    call(subscriber: Subscriber<T>, source: any): any {
-        return source.subscribe(new DecryptWithAesKeySubscriber(subscriber, this._source, this._data));
+    call(subscriber: Subscriber<R>, source: Observable<AESKeyCreationResult>): any {
+        return source.subscribe(new DecryptWithAesKeySubscriber(subscriber, this._data));
     }
 }
 
 /**
  * Operator subscriber class definition
  */
-class DecryptWithAesKeySubscriber<T> extends Subscriber<T> {
+class DecryptWithAesKeySubscriber<R> extends Subscriber<AESKeyCreationResult> {
     /**
      * Class constructor
      *
      * @param destination subscriber destination
-     * @param _source subscriber source
      * @param _data {Buffer} - data for encrypting.
      */
-    constructor(destination: Subscriber<T>, private _source: Observable<T>, private _data: Buffer) {
+    constructor(destination: Subscriber<R>, private _data: Buffer) {
         super(destination);
     }
 
     /**
      * Function to send result to next subscriber
      *
-     * @param value result for next subscriber
+     * @param aesKey key from previous subscriber
      *
      * @private
      */
-    protected _next(value: T): void {
-        this._source.subscribe((aesKey: any) => {
-                try {
-                    const decipher: Decipher = createDecipheriv('aes-256-cbc', new Buffer(aesKey.key, 'hex'), new Buffer(aesKey.iv, 'hex'));
-                    const bufDecrypted: Buffer = decipher.update(new Buffer(this._data));
-                    const bufFinal: Buffer = decipher.final();
+    protected _next(aesKey: AESKeyCreationResult): void {
+        try {
+            const decipher: Decipher = createDecipheriv('aes-256-cbc', Buffer.from(aesKey.key, 'hex'), Buffer.from(aesKey.iv, 'hex'));
+            const bufDecrypted: Buffer = decipher.update(Buffer.from(this._data));
+            const bufFinal: Buffer = decipher.final();
 
-                    this.destination.next(Buffer.concat([bufDecrypted, bufFinal]));
-                    this.destination.complete();
-                } catch (e) {
-                    this.destination.error(e);
-                }
-            }
-        );
+            this.destination.next(Buffer.concat([bufDecrypted, bufFinal]));
+            this.destination.complete();
+        } catch (e) {
+            this.destination.error(e);
+        }
     }
 }

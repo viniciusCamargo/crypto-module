@@ -19,7 +19,7 @@ import '../../src/observable/add/aes/encryptWithAesKey';
 import '../../src/observable/add/aes/decryptWithAesKey';
 
 @suite('- Unit AESServiceTest file')
-class AESServiceTest {
+export class AESServiceTest {
     // private property to store service instance
     private _aesService: AESService;
     // private property to store mock service instance
@@ -95,7 +95,7 @@ class AESServiceTest {
     testAesServiceEncryptWithAesKeyObservable(done) {
         this._hashServiceMock.expects('generate')
             .returns(Observable.of(
-                new Buffer('61cac683ff27580e4c68778df5208c745b0e4731727786586938c794a37f441931cef43b785870e993cbc94aee0354cf', 'hex')));
+                Buffer.from('61cac683ff27580e4c68778df5208c745b0e4731727786586938c794a37f441931cef43b785870e993cbc94aee0354cf', 'hex')));
 
         unit.object(this._aesService.createKey(this._password, this._salt).encryptWithAesKey(null))
             .isInstanceOf(Observable).when(_ => {
@@ -112,7 +112,7 @@ class AESServiceTest {
     testAesServiceDecryptWithAesKeyObservable(done) {
         this._hashServiceMock.expects('generate')
             .returns(Observable.of(
-                new Buffer('61cac683ff27580e4c68778df5208c745b0e4731727786586938c794a37f441931cef43b785870e993cbc94aee0354cf', 'hex')));
+                Buffer.from('61cac683ff27580e4c68778df5208c745b0e4731727786586938c794a37f441931cef43b785870e993cbc94aee0354cf', 'hex')));
 
         unit.object(this._aesService.createKey(this._password, this._salt).decryptWithAesKey(null))
             .isInstanceOf(Observable).when(_ => {

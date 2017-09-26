@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs/Observable';
 import { Operator } from 'rxjs/Operator';
 import { Subscriber } from 'rxjs/Subscriber';
+import * as NodeRSA from 'node-rsa';
 import { Encoding, Data } from 'node-rsa';
-import { Buffer } from 'buffer';
 
 /**
  * New observable operator
@@ -13,26 +13,29 @@ import { Buffer } from 'buffer';
  * @param encoding {string} - optional. Encoding for output result, may be 'buffer', 'binary', 'hex' or 'base64'. Default 'buffer'.
  * @param sourceEncoding {string} - optional. Encoding for given string. Default utf8.
  *
- * @return {Observable<T>|WebSocketSubject<T>}
+ * @return {Observable<R>}
  */
-export function sign<T>(data: Data | Buffer, encoding?: 'buffer' | Encoding, sourceEncoding?: Encoding): Observable<T> {
-    return this.lift(new SignOperator(this, data, encoding, sourceEncoding));
+export function sign<NodeRSA, R>(data: Data | Buffer, encoding?: 'buffer' | Encoding, sourceEncoding?: Encoding): Observable<R> {
+    return higherOrder<NodeRSA, R>(data, encoding, sourceEncoding)(this);
+}
+
+function higherOrder<NodeRSA, R>(data: Data | Buffer, encoding?: 'buffer' | Encoding,
+                                 sourceEncoding?: Encoding): (source: Observable<NodeRSA>) => Observable<R> {
+    return (source: Observable<NodeRSA>) => <Observable<R>> source.lift(new SignOperator(data, encoding, sourceEncoding));
 }
 
 /**
  * Operator class definition
  */
-class SignOperator<T> implements Operator<T, T> {
+class SignOperator<R> implements Operator<NodeRSA, R> {
     /**
      * Class constructor
      *
-     * @param _source subscriber source
      * @param _data {string|number|object|array|Buffer} - data for signing. Object and array will convert to JSON string.
      * @param _encoding {string} - optional. Encoding for output result, may be 'buffer', 'binary', 'hex' or 'base64'. Default 'buffer'.
      * @param _sourceEncoding {string} - optional. Encoding for given string. Default utf8.
      */
-    constructor(private _source: Observable<T>,
-                private _data: Data | Buffer, private _encoding?: 'buffer' | Encoding, private _sourceEncoding?: Encoding) {
+    constructor(private _data: Data | Buffer, private _encoding?: 'buffer' | Encoding, private _sourceEncoding?: Encoding) {
     }
 
     /**
@@ -43,46 +46,41 @@ class SignOperator<T> implements Operator<T, T> {
      *
      * @return {AnonymousSubscription|Subscription|Promise<PushSubscription>|TeardownLogic}
      */
-    call(subscriber: Subscriber<T>, source: any): any {
-        return source.subscribe(new SignSubscriber(subscriber, this._source, this._data, this._encoding, this._sourceEncoding));
+    call(subscriber: Subscriber<R>, source: Observable<NodeRSA>): any {
+        return source.subscribe(new SignSubscriber(subscriber, this._data, this._encoding, this._sourceEncoding));
     }
 }
 
 /**
  * Operator subscriber class definition
  */
-class SignSubscriber<T> extends Subscriber<T> {
+class SignSubscriber<R> extends Subscriber<NodeRSA> {
     /**
      * Class constructor
      *
      * @param destination subscriber destination
-     * @param _source subscriber source
      * @param _data {string|number|object|array|Buffer} - data for signing. Object and array will convert to JSON string.
      * @param _encoding {string} - optional. Encoding for output result, may be 'buffer', 'binary', 'hex' or 'base64'. Default 'buffer'.
      * @param _sourceEncoding {string} - optional. Encoding for given string. Default utf8.
      */
-    constructor(destination: Subscriber<T>, private _source: Observable<T>,
-                private _data: Data | Buffer, private _encoding?: 'buffer' | Encoding, private _sourceEncoding?: Encoding) {
+    constructor(destination: Subscriber<R>, private _data: Data | Buffer, private _encoding?: 'buffer' | Encoding,
+                private _sourceEncoding?: Encoding) {
         super(destination);
     }
 
     /**
      * Function to send result to next subscriber
      *
-     * @param value result for next subscriber
+     * @param nodeRSA object from previous subscriber
      *
      * @private
      */
-    protected _next(value: T): void {
-        this._source.subscribe((nodeRSA) => {
-                try {
-                    const k = (<any> nodeRSA).sign(this._data, this._encoding, this._sourceEncoding);
-                    this.destination.next(k);
-                    this.destination.complete();
-                } catch (e) {
-                    this.destination.error(e);
-                }
-            }
-        );
+    protected _next(nodeRSA: NodeRSA): void {
+        try {
+            this.destination.next(nodeRSA.sign(<any> this._data, <any> this._encoding, this._sourceEncoding));
+            this.destination.complete();
+        } catch (e) {
+            this.destination.error(e);
+        }
     }
 }

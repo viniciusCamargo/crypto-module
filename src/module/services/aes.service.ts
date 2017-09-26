@@ -33,7 +33,7 @@ export class AESService {
         return this._hashService.generate(password, salt, 4096, 48, 'sha256')
             .map((derivedKey: Buffer) => {
                 // clone buffer
-                const keyBuffer = new Buffer(derivedKey);
+                const keyBuffer = Buffer.from(derivedKey);
 
                 // get aes256 key
                 const key = keyBuffer.slice(0, 32).toString('hex');
