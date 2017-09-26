@@ -14,7 +14,7 @@ import { Observable } from 'rxjs/Observable';
 import { HashService } from '../../src';
 
 @suite('- Unit HashServiceTest file')
-class HashServiceTest {
+export class HashServiceTest {
     // private property to store service instance
     private _hashService: HashService;
 

@@ -1,7 +1,8 @@
 import { Observable } from 'rxjs/Observable';
 import { Operator } from 'rxjs/Operator';
 import { Subscriber } from 'rxjs/Subscriber';
-import { Format } from 'node-rsa';
+import * as NodeRSA from 'node-rsa';
+import { Format, Key } from 'node-rsa';
 
 /**
  * New observable operator
@@ -10,23 +11,26 @@ import { Format } from 'node-rsa';
  *
  * @param format key format
  *
- * @return {Observable<T>|WebSocketSubject<T>}
+ * @return {Observable<Key>}
  */
-export function exportKey<T>(format?: Format): Observable<T> {
-    return this.lift(new ExportKeyOperator(this, format));
+export function exportKey<NodeRSA>(format?: Format): Observable<Key> {
+    return higherOrder<NodeRSA>(format)(this);
+}
+
+function higherOrder<NodeRSA>(format?: Format): (source: Observable<NodeRSA>) => Observable<Key> {
+    return (source: Observable<NodeRSA>) => <Observable<Key>> source.lift(new ExportKeyOperator(format));
 }
 
 /**
  * Operator class definition
  */
-class ExportKeyOperator<T> implements Operator<T, T> {
+class ExportKeyOperator<Key> implements Operator<NodeRSA, Key> {
     /**
      * Class constructor
      *
-     * @param _source subscriber source
      * @param _format key format
      */
-    constructor(private _source: Observable<T>, private _format?: Format) {
+    constructor(private _format?: Format) {
     }
 
     /**
@@ -37,43 +41,38 @@ class ExportKeyOperator<T> implements Operator<T, T> {
      *
      * @return {AnonymousSubscription|Subscription|Promise<PushSubscription>|TeardownLogic}
      */
-    call(subscriber: Subscriber<T>, source: any): any {
-        return source.subscribe(new ExportKeySubscriber(subscriber, this._source, this._format));
+    call(subscriber: Subscriber<Key>, source: Observable<NodeRSA>): any {
+        return source.subscribe(new ExportKeySubscriber(subscriber, this._format));
     }
 }
 
 /**
  * Operator subscriber class definition
  */
-class ExportKeySubscriber<T> extends Subscriber<T> {
+class ExportKeySubscriber<Key> extends Subscriber<NodeRSA> {
     /**
      * Class constructor
      *
      * @param destination subscriber destination
-     * @param _source subscriber source
      * @param _format key format
      */
-    constructor(destination: Subscriber<T>, private _source: Observable<T>, private _format?: Format) {
+    constructor(destination: Subscriber<Key>, private _format?: Format) {
         super(destination);
     }
 
     /**
      * Function to send result to next subscriber
      *
-     * @param value result for next subscriber
+     * @param nodeRSA object from previous subscriber
      *
      * @private
      */
-    protected _next(value: T): void {
-        this._source.subscribe((nodeRSA) => {
-                try {
-                    const k = (<any> nodeRSA).exportKey(this._format);
-                    this.destination.next(k);
-                    this.destination.complete();
-                } catch (e) {
-                    this.destination.error(e);
-                }
-            }
-        );
+    protected _next(nodeRSA: NodeRSA): void {
+        try {
+            this.destination.next(nodeRSA.exportKey(this._format));
+            this.destination.complete();
+        } catch (e) {
+            this.destination.error(e);
+        }
     }
 }

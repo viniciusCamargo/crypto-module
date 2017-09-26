@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs/Observable';
 import { Operator } from 'rxjs/Operator';
 import { Subscriber } from 'rxjs/Subscriber';
+import * as NodeRSA from 'node-rsa';
 import { Encoding } from 'node-rsa';
-import { Buffer } from 'buffer';
 
 /**
  * New observable operator
@@ -12,24 +12,28 @@ import { Buffer } from 'buffer';
  * @param data {Buffer} - buffer for decrypting
  * @param encoding - encoding for result string, can also take 'json' or 'buffer' for the automatic conversion of this type
  *
- * @return {Observable<T>|WebSocketSubject<T>}
+ * @return {Observable<R>}
  */
-export function decryptPrivate<T>(data: Buffer | string, encoding?: 'buffer' | Encoding | 'json'): Observable<T> {
-    return this.lift(new DecryptPrivateOperator(this, data, encoding));
+export function decryptPrivate<NodeRSA, R>(data: Buffer | string, encoding?: 'buffer' | Encoding | 'json'): Observable<R> {
+    return higherOrder<NodeRSA, R>(data, encoding)(this);
+}
+
+function higherOrder<NodeRSA, R>(data: Buffer | string,
+                                 encoding?: 'buffer' | Encoding | 'json'): (source: Observable<NodeRSA>) => Observable<R> {
+    return (source: Observable<NodeRSA>) => <Observable<R>> source.lift(new DecryptPrivateOperator(data, encoding));
 }
 
 /**
  * Operator class definition
  */
-class DecryptPrivateOperator<T> implements Operator<T, T> {
+class DecryptPrivateOperator<R> implements Operator<NodeRSA, R> {
     /**
      * Class constructor
      *
-     * @param _source subscriber source
      * @param _data {Buffer} - buffer for decrypting
      * @param _encoding - encoding for result string, can also take 'json' or 'buffer' for the automatic conversion of this type
      */
-    constructor(private _source: Observable<T>, private _data: Buffer | string, private _encoding?: 'buffer' | Encoding | 'json') {
+    constructor(private _data: Buffer | string, private _encoding?: 'buffer' | Encoding | 'json') {
     }
 
     /**
@@ -40,45 +44,39 @@ class DecryptPrivateOperator<T> implements Operator<T, T> {
      *
      * @return {AnonymousSubscription|Subscription|Promise<PushSubscription>|TeardownLogic}
      */
-    call(subscriber: Subscriber<T>, source: any): any {
-        return source.subscribe(new DecryptPrivateSubscriber(subscriber, this._source, this._data, this._encoding));
+    call(subscriber: Subscriber<R>, source: Observable<NodeRSA>): any {
+        return source.subscribe(new DecryptPrivateSubscriber(subscriber, this._data, this._encoding));
     }
 }
 
 /**
  * Operator subscriber class definition
  */
-class DecryptPrivateSubscriber<T> extends Subscriber<T> {
+class DecryptPrivateSubscriber<R> extends Subscriber<NodeRSA> {
     /**
      * Class constructor
      *
      * @param destination subscriber destination
-     * @param _source subscriber source
      * @param _data {Buffer} - buffer for decrypting
      * @param _encoding - encoding for result string, can also take 'json' or 'buffer' for the automatic conversion of this type
      */
-    constructor(destination: Subscriber<T>, private _source: Observable<T>,
-                private _data: Buffer | string, private _encoding?: 'buffer' | Encoding | 'json') {
+    constructor(destination: Subscriber<R>, private _data: Buffer | string, private _encoding?: 'buffer' | Encoding | 'json') {
         super(destination);
     }
 
     /**
      * Function to send result to next subscriber
      *
-     * @param value result for next subscriber
+     * @param nodeRSA object from previous subscriber
      *
      * @private
      */
-    protected _next(value: T): void {
-        this._source.subscribe((nodeRSA) => {
-                try {
-                    const k = (<any> nodeRSA).decrypt(this._data, this._encoding);
-                    this.destination.next(k);
-                    this.destination.complete();
-                } catch (e) {
-                    this.destination.error(e);
-                }
-            }
-        );
+    protected _next(nodeRSA: NodeRSA): void {
+        try {
+            this.destination.next(nodeRSA.decrypt(this._data, <any> this._encoding));
+            this.destination.complete();
+        } catch (e) {
+            this.destination.error(e);
+        }
     }
 }

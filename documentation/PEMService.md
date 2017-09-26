@@ -53,7 +53,9 @@ class HapinessModuleNeedsCryptoModule {}
     * [.getDhparamInfo(dh)](#getdhparaminfodh)
     * [.createPkcs12(key,certificate,password[, options])](#createpkcs12key-certificate-password-options)
     * [.readPkcs12(bufferOrPath[, options])](#readpkcs12bufferorpath-options)
+    * [.checkPkcs12(bufferOrPath[, passphrase])](#checkpkcs12bufferorpath-passphrase)
     * [.verifySigningChain(certificate, ca)](#verifysigningchaincertificate-ca)
+    * [.checkCertificate(certificate[, passphrase])](#checkcertificate-passphrase)
 * [Parameters types in detail](#parameters-types-in-detail)
     * [PrivateKeyCreationOptions](#privatekeycreationoptions)
     * [PrivateKeyCipher](#privatekeycipher)
@@ -317,6 +319,27 @@ this._pemService.readPkcs12([BUFFER])
 ```
 [Back to top](#table-of-contents)
 
+### `.checkPkcs12(bufferOrPath[, passphrase])`
+
+Verifies a `PKCS12 keystore`.
+
+**Parameters:**
+> - ***{string} bufferOrPath*** *(required): `Buffer` representation or `path` to `PKCS12 keystore`.*
+> - ***{string} passphrase*** *(optional): `Passphrase` which will be used to open the `keystore`.*
+
+**Response:**
+> *{[RxJS.Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md)} The successfully `verified` will be passed as a `boolean`.*
+
+**Example:**
+```javascript
+this._pemService.checkPkcs12([BUFFER])
+    .subscribe(
+        (verified: boolean) => console.log(verified), // Show `verified` boolean in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+[Back to top](#table-of-contents)
+
 ### `.verifySigningChain(certificate, ca)`
 
 Verifies the `signing chain` of the passed `certificate` for given `ca`.
@@ -331,6 +354,27 @@ Verifies the `signing chain` of the passed `certificate` for given `ca`.
 **Example:**
 ```javascript
 this._pemService.verifySigningChain([BUFFER], [CA])
+    .subscribe(
+        (verified: boolean) => console.log(verified), // Show `verified` boolean in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+[Back to top](#table-of-contents)
+
+### `.checkCertificate(certificate[, passphrase])`
+
+`Check` / `verify` consistency of a `certificate`.
+
+**Parameters:**
+> - ***{string} certificate*** *(required): `PEM encoded certificate`.*
+> - ***{string} passphrase*** *(optional): `Passphrase` which will be used to open the `cretificate`.*
+
+**Response:**
+> *{[RxJS.Observable](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md)} The successfully `verified` will be passed as a `boolean`.*
+
+**Example:**
+```javascript
+this._pemService.checkCertificate([BUFFER])
     .subscribe(
         (verified: boolean) => console.log(verified), // Show `verified` boolean in the console
         e => console.error(e.message) // Show error message in the console
@@ -387,6 +431,9 @@ this._pemService.verifySigningChain([BUFFER], [CA])
 
 ## Change History
 
+* Add new methods (2017-09-26)
+    * [.checkPkcs12(bufferOrPath[, passphrase])](#checkpkcs12bufferorpath-passphrase)
+    * [.checkCertificate(certificate[, passphrase])](#checkcertificate-passphrase)
 * Implementation of all methods (2017-07-28)
     * [.createPrivateKey([keyBitsize, options])](#createprivatekeykeybitsize-options)
     * [.createDhparam([keyBitsize])](#createdhparamkeybitsize)

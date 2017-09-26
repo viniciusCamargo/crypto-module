@@ -11,24 +11,27 @@ import { Key, Format } from 'node-rsa';
  * @param key key from PEM string, PEM/DER Buffer or components
  * @param format key format
  *
- * @return {Observable<T>|WebSocketSubject<T>}
+ * @return {Observable<NodeRSA>}
  */
-export function importKey<T>(key: Key, format?: Format): Observable<T> {
-    return this.lift(new ImportKeyOperator(this, key, format));
+export function importKey<NodeRSA>(key: Key, format?: Format): Observable<NodeRSA> {
+    return higherOrder<NodeRSA>(key, format)(this);
+}
+
+function higherOrder<NodeRSA>(key: Key, format?: Format): (source: Observable<NodeRSA>) => Observable<NodeRSA> {
+    return (source: Observable<NodeRSA>) => <Observable<NodeRSA>> source.lift(new ImportKeyOperator(key, format));
 }
 
 /**
  * Operator class definition
  */
-class ImportKeyOperator<T> implements Operator<T, T> {
+class ImportKeyOperator<NodeRSA> implements Operator<NodeRSA, NodeRSA> {
     /**
      * Class constructor
      *
-     * @param _source subscriber source
      * @param _key key from PEM string, PEM/DER Buffer or components
      * @param _format key format
      */
-    constructor(private _source: Observable<T>, private _key: Key, private _format?: Format) {
+    constructor(private _key: Key, private _format?: Format) {
     }
 
     /**
@@ -39,44 +42,40 @@ class ImportKeyOperator<T> implements Operator<T, T> {
      *
      * @return {AnonymousSubscription|Subscription|Promise<PushSubscription>|TeardownLogic}
      */
-    call(subscriber: Subscriber<T>, source: any): any {
-        return source.subscribe(new ImportKeySubscriber(subscriber, this._source, this._key, this._format));
+    call(subscriber: Subscriber<NodeRSA>, source: Observable<NodeRSA>): any {
+        return source.subscribe(new ImportKeySubscriber(subscriber, this._key, this._format));
     }
 }
 
 /**
  * Operator subscriber class definition
  */
-class ImportKeySubscriber<T> extends Subscriber<T> {
+class ImportKeySubscriber<NodeRSA> extends Subscriber<NodeRSA> {
     /**
      * Class constructor
      *
      * @param destination subscriber destination
-     * @param _source subscriber source
      * @param _key key from PEM string, PEM/DER Buffer or components
      * @param _format key format
      */
-    constructor(destination: Subscriber<T>, private _source: Observable<T>, private _key: Key, private _format?: Format) {
+    constructor(destination: Subscriber<NodeRSA>, private _key: Key, private _format?: Format) {
         super(destination);
     }
 
     /**
      * Function to send result to next subscriber
      *
-     * @param value result for next subscriber
+     * @param nodeRSA object from previous subscriber
      *
      * @private
      */
-    protected _next(value: T): void {
-        this._source.subscribe((nodeRSA) => {
-                try {
-                    (<any> nodeRSA).importKey(this._key, this._format);
-                    this.destination.next(nodeRSA);
-                    this.destination.complete();
-                } catch (e) {
-                    this.destination.error(e);
-                }
-            }
-        );
+    protected _next(nodeRSA: NodeRSA): void {
+        try {
+            (<any> nodeRSA).importKey(this._key, this._format);
+            this.destination.next(nodeRSA);
+            this.destination.complete();
+        } catch (e) {
+            this.destination.error(e);
+        }
     }
 }

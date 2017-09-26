@@ -14,7 +14,7 @@ import { Observable } from 'rxjs/Observable';
 import { PEMService } from '../../src';
 
 @suite('- Unit PEMServiceTest file')
-class PEMServiceTest {
+export class PEMServiceTest {
     // private property to store service instance
     private _pemService: PEMService;
 
@@ -230,6 +230,22 @@ class PEMServiceTest {
     }
 
     /**
+     * Test if `PEMService` as a `checkPkcs12` function
+     */
+    @test('- `PEMService` must have `checkPkcs12` function')
+    testPemServiceCheckPkcs12() {
+        unit.function(this._pemService.checkPkcs12);
+    }
+
+    /**
+     * Test if `PEMService.checkPkcs12()` function returns an Observable
+     */
+    @test('- `PEMService.checkPkcs12()` function must return an Observable')
+    testPemServiceCheckPkcs12Observable() {
+        unit.object(this._pemService.checkPkcs12(null)).isInstanceOf(Observable);
+    }
+
+    /**
      * Test if `PEMService` as a `verifySigningChain` function
      */
     @test('- `PEMService` must have `verifySigningChain` function')
@@ -243,5 +259,21 @@ class PEMServiceTest {
     @test('- `PEMService.verifySigningChain()` function must return an Observable')
     testPemServiceVerifySigningChainObservable() {
         unit.object(this._pemService.verifySigningChain(null, null)).isInstanceOf(Observable);
+    }
+
+    /**
+     * Test if `PEMService` as a `checkCertificate` function
+     */
+    @test('- `PEMService` must have `checkCertificate` function')
+    testPemServiceCheckCertificate() {
+        unit.function(this._pemService.checkCertificate);
+    }
+
+    /**
+     * Test if `PEMService.checkCertificate()` function returns an Observable
+     */
+    @test('- `PEMService.checkCertificate()` function must return an Observable')
+    testPemServiceCheckCertificateObservable() {
+        unit.object(this._pemService.checkCertificate(null)).isInstanceOf(Observable);
     }
 }

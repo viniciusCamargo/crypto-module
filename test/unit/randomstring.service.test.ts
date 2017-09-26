@@ -14,7 +14,7 @@ import { Observable } from 'rxjs/Observable';
 import { RandomstringService } from '../../src';
 
 @suite('- Unit RandomstringServiceTest file')
-class RandomstringServiceTest {
+export class RandomstringServiceTest {
     // private property to store service instance
     private _randomstringService: RandomstringService;
     /**

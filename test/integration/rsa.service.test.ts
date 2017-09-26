@@ -31,7 +31,7 @@ import '../../src/observable/add/rsa/sign';
 import '../../src/observable/add/rsa/verify';
 
 @suite('- Integration RSAServiceTest file')
-class RSAServiceTest {
+export class RSAServiceTest {
     // private property to store service instance
     private _rsaService: RSAService;
     // private property to store test key

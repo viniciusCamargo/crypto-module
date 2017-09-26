@@ -12,7 +12,7 @@ import * as unit from 'unit.js';
 import { JWTService, JsonWebTokenError } from '../../src';
 
 @suite('- Integration JWTServiceTest file')
-class JWTServiceTest {
+export class JWTServiceTest {
     // private property to store service instance
     private _jwtService: JWTService;
 

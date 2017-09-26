@@ -11,10 +11,10 @@ import * as unit from 'unit.js';
 import 'rxjs/add/operator/mergeMap';
 
 // element to test
-import { PEMService, CertificateCreationResult, PrivateKeyCreationResult, DhParamKeyCreationResult } from '../../src';
+import { PEMService, CertificateCreationResult, PrivateKeyCreationResult, DhParamKeyCreationResult, PKCS12CreationResult } from '../../src';
 
 @suite('- Integration PEMServiceTest file')
-class PEMServiceTest {
+export class PEMServiceTest {
     // private property to store service instance
     private _pemService: PEMService;
 
@@ -186,6 +186,20 @@ class PEMServiceTest {
     }
 
     /**
+     * Test if `PEMService.checkPkcs12()` Observable returns `true`
+     */
+    @test('- `PEMService.checkPkcs12()` Observable must return `true`')
+    testPemServiceCheckPkcs12Observable(done) {
+        this._pemService.createPrivateKey()
+            .flatMap((pk: PrivateKeyCreationResult) => this._pemService.createCertificate({
+                clientKey: pk.key,
+                selfSigned: true
+            }).flatMap((c: CertificateCreationResult) => this._pemService.createPkcs12(c.clientKey, c.certificate, 'password')))
+            .flatMap((pkcs12Result: PKCS12CreationResult) => this._pemService.checkPkcs12(pkcs12Result.pkcs12, 'password'))
+            .subscribe(isValid => unit.bool(isValid).isTrue().when(_ => done()));
+    }
+
+    /**
      * Test if `PEMService.verifySigningChain()` Observable returns true
      */
     @test('- `PEMService.verifySigningChain()` Observable must return true')
@@ -194,6 +208,16 @@ class PEMServiceTest {
             .flatMap((ca: CertificateCreationResult) => this._pemService.createCertificate({
                 serviceKey: ca.serviceKey, serviceCertificate: ca.certificate, serial: Date.now()
             }).flatMap((cert: CertificateCreationResult) => this._pemService.verifySigningChain(cert.certificate, ca.certificate)))
+            .subscribe(v => unit.bool(v).isTrue().when(_ => done()));
+    }
+
+    /**
+     * Test if `PEMService.checkCertificate()` Observable returns true
+     */
+    @test('- `PEMService.checkCertificate()` Observable must return true')
+    testPemServiceCheckCertificateObservable(done) {
+        this._pemService.createCertificate()
+            .flatMap((ca: CertificateCreationResult) => this._pemService.checkCertificate(ca.certificate))
             .subscribe(v => unit.bool(v).isTrue().when(_ => done()));
     }
 }

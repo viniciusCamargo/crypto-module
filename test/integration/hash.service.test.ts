@@ -14,7 +14,7 @@ import { HashService } from '../../src';
 import { Buffer } from 'buffer';
 
 @suite('- Integration HashServiceTest file')
-class HashServiceTest {
+export class HashServiceTest {
     // private property to store service instance
     private _hashService: HashService;
     // private property to store password

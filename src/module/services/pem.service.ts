@@ -260,6 +260,19 @@ export class PEMService {
     }
 
     /**
+     * Verifies a PKCS12 keystore.
+     *
+     * @param {string} bufferOrPath is a PKCS12 keystore as a Buffer or the path to a file
+     * @param {string} [passphrase] is an optional passphrase which will be used to open the keystore
+     *
+     * @return {Observable<boolean>}
+     */
+    checkPkcs12(bufferOrPath: string, passphrase?: string): Observable<boolean> {
+        return (<(bufferOrPath: string, passphrase?: string) =>
+            Observable<boolean>> Observable.bindNodeCallback((<any>pem).checkPkcs12))(bufferOrPath, passphrase);
+    }
+
+    /**
      * Verifies the signing chain of the passed certificate
      *
      * @param {String} certificate PEM encoded certificate
@@ -270,6 +283,19 @@ export class PEMService {
     verifySigningChain(certificate: string, ca: string[]): Observable<boolean> {
         return (<(certificate: string, ca: string[]) =>
             Observable<boolean>> Observable.bindNodeCallback(pem.verifySigningChain))(certificate, ca);
+    }
+
+    /**
+     * Check / verify consistency of a certificate.
+     *
+     * @param {string} certificate is a PEM encoded certificate string
+     * @param {string} [passphrase] is an optional passphrase which will be used to open the certificate
+     *
+     * @return {Observable<boolean>}
+     */
+    checkCertificate(certificate: string, passphrase?: string): Observable<boolean> {
+        return (<(certificate: string, passphrase?: string) =>
+            Observable<boolean>> Observable.bindNodeCallback((<any>pem).checkCertificate))(certificate, passphrase);
     }
 }
 

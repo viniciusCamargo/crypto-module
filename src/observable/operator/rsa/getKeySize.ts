@@ -1,28 +1,31 @@
 import { Observable } from 'rxjs/Observable';
 import { Operator } from 'rxjs/Operator';
 import { Subscriber } from 'rxjs/Subscriber';
+import * as NodeRSA from 'node-rsa';
 
 /**
  * New observable operator
  *
  * Return key size in bits.
  *
- * @return {Observable<T>|WebSocketSubject<T>}
+ * @return {Observable<number>}
  */
-export function getKeySize<T>(): Observable<T> {
-    return this.lift(new GetKeySizeOperator(this));
+export function getKeySize<NodeRSA>(): Observable<number> {
+    return higherOrder<NodeRSA>()(this);
+}
+
+function higherOrder<NodeRSA>(): (source: Observable<NodeRSA>) => Observable<number> {
+    return (source: Observable<NodeRSA>) => <Observable<number>> source.lift(new GetKeySizeOperator());
 }
 
 /**
  * Operator class definition
  */
-class GetKeySizeOperator<T> implements Operator<T, T> {
+class GetKeySizeOperator<R> implements Operator<NodeRSA, R> {
     /**
      * Class constructor
-     *
-     * @param _source subscriber source
      */
-    constructor(private _source: Observable<T>) {
+    constructor() {
     }
 
     /**
@@ -33,42 +36,37 @@ class GetKeySizeOperator<T> implements Operator<T, T> {
      *
      * @return {AnonymousSubscription|Subscription|Promise<PushSubscription>|TeardownLogic}
      */
-    call(subscriber: Subscriber<T>, source: any): any {
-        return source.subscribe(new GetKeySizeSubscriber(subscriber, this._source));
+    call(subscriber: Subscriber<R>, source: Observable<NodeRSA>): any {
+        return source.subscribe(new GetKeySizeSubscriber(subscriber));
     }
 }
 
 /**
  * Operator subscriber class definition
  */
-class GetKeySizeSubscriber<T> extends Subscriber<T> {
+class GetKeySizeSubscriber<R> extends Subscriber<NodeRSA> {
     /**
      * Class constructor
      *
      * @param destination subscriber destination
-     * @param _source subscriber source
      */
-    constructor(destination: Subscriber<T>, private _source: Observable<T>) {
+    constructor(destination: Subscriber<R>) {
         super(destination);
     }
 
     /**
      * Function to send result to next subscriber
      *
-     * @param value result for next subscriber
+     * @param nodeRSA object from previous subscriber
      *
      * @private
      */
-    protected _next(value: T): void {
-        this._source.subscribe((nodeRSA) => {
-                try {
-                    const k = (<any> nodeRSA).getKeySize();
-                    this.destination.next(k);
-                    this.destination.complete();
-                } catch (e) {
-                    this.destination.error(e);
-                }
-            }
-        );
+    protected _next(nodeRSA: NodeRSA): void {
+        try {
+            this.destination.next(nodeRSA.getKeySize());
+            this.destination.complete();
+        } catch (e) {
+            this.destination.error(e);
+        }
     }
 }

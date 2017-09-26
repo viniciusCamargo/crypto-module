@@ -3,6 +3,7 @@ import { Operator } from 'rxjs/Operator';
 import { Subscriber } from 'rxjs/Subscriber';
 import { Buffer } from 'buffer';
 import { Cipher, createCipheriv } from 'crypto';
+import { AESKeyCreationResult } from '../../..';
 
 /**
  * New observable operator
@@ -11,23 +12,26 @@ import { Cipher, createCipheriv } from 'crypto';
  *
  * @param data {Buffer} - data for encrypting.
  *
- * @return {Observable<T>|WebSocketSubject<T>} Buffer of encrypted data
+ * @return {Observable<Buffer>} Buffer of encrypted data
  */
-export function encryptWithAesKey<T>(data: Buffer): Observable<T> {
-    return this.lift(new EncryptWithAesKeyOperator(this, data));
+export function encryptWithAesKey<AESKeyCreationResult>(data: Buffer): Observable<Buffer> {
+    return higherOrder<AESKeyCreationResult>(data)(this);
+}
+
+function higherOrder<AESKeyCreationResult>(data: Buffer): (source: Observable<AESKeyCreationResult>) => Observable<Buffer> {
+    return (source: Observable<AESKeyCreationResult>) => <Observable<Buffer>> source.lift(new EncryptWithAesKeyOperator(data));
 }
 
 /**
  * Operator class definition
  */
-class EncryptWithAesKeyOperator<T> implements Operator<T, T> {
+class EncryptWithAesKeyOperator<R> implements Operator<AESKeyCreationResult, R> {
     /**
      * Class constructor
      *
-     * @param _source subscriber source
      * @param _data {Buffer} - data for encrypting.
      */
-    constructor(private _source: Observable<T>, private _data: Buffer) {
+    constructor(private _data: Buffer) {
     }
 
     /**
@@ -38,46 +42,42 @@ class EncryptWithAesKeyOperator<T> implements Operator<T, T> {
      *
      * @return {AnonymousSubscription|Subscription|Promise<PushSubscription>|TeardownLogic}
      */
-    call(subscriber: Subscriber<T>, source: any): any {
-        return source.subscribe(new EncryptWithAesKeySubscriber(subscriber, this._source, this._data));
+    call(subscriber: Subscriber<R>, source: Observable<AESKeyCreationResult>): any {
+        return source.subscribe(new EncryptWithAesKeySubscriber(subscriber, this._data));
     }
 }
 
 /**
  * Operator subscriber class definition
  */
-class EncryptWithAesKeySubscriber<T> extends Subscriber<T> {
+class EncryptWithAesKeySubscriber<R> extends Subscriber<AESKeyCreationResult> {
     /**
      * Class constructor
      *
      * @param destination subscriber destination
-     * @param _source subscriber source
      * @param _data {Buffer} - data for encrypting.
      */
-    constructor(destination: Subscriber<T>, private _source: Observable<T>, private _data: Buffer) {
+    constructor(destination: Subscriber<R>, private _data: Buffer) {
         super(destination);
     }
 
     /**
      * Function to send result to next subscriber
      *
-     * @param value result for next subscriber
+     * @param aesKey key from previous subscriber
      *
      * @private
      */
-    protected _next(value: T): void {
-        this._source.subscribe((aesKey: any) => {
-                try {
-                    const cipher: Cipher = createCipheriv('aes-256-cbc', new Buffer(aesKey.key, 'hex'), new Buffer(aesKey.iv, 'hex'));
-                    const bufEncrypted: Buffer = cipher.update(new Buffer(this._data));
-                    const bufFinal: Buffer = cipher.final();
+    protected _next(aesKey: AESKeyCreationResult): void {
+        try {
+            const cipher: Cipher = createCipheriv('aes-256-cbc', Buffer.from(aesKey.key, 'hex'), Buffer.from(aesKey.iv, 'hex'));
+            const bufEncrypted: Buffer = cipher.update(Buffer.from(this._data));
+            const bufFinal: Buffer = cipher.final();
 
-                    this.destination.next(Buffer.concat([bufEncrypted, bufFinal]));
-                    this.destination.complete();
-                } catch (e) {
-                    this.destination.error(e);
-                }
-            }
-        );
+            this.destination.next(Buffer.concat([bufEncrypted, bufFinal]));
+            this.destination.complete();
+        } catch (e) {
+            this.destination.error(e);
+        }
     }
 }

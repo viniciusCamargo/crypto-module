@@ -1,28 +1,31 @@
 import { Observable } from 'rxjs/Observable';
 import { Operator } from 'rxjs/Operator';
 import { Subscriber } from 'rxjs/Subscriber';
+import * as NodeRSA from 'node-rsa';
 
 /**
  * New observable operator
  *
  * Return true if key pair doesn't have any data.
  *
- * @return {Observable<T>|WebSocketSubject<T>}
+ * @return {Observable<boolean>}
  */
-export function isEmptyKey<T>(): Observable<T> {
-    return this.lift(new IsEmptyKeyOperator(this));
+export function isEmptyKey<NodeRSA>(): Observable<boolean> {
+    return higherOrder<NodeRSA>()(this);
+}
+
+function higherOrder<NodeRSA>(): (source: Observable<NodeRSA>) => Observable<boolean> {
+    return (source: Observable<NodeRSA>) => <Observable<boolean>> source.lift(new IsEmptyKeyOperator());
 }
 
 /**
  * Operator class definition
  */
-class IsEmptyKeyOperator<T> implements Operator<T, T> {
+class IsEmptyKeyOperator<R> implements Operator<NodeRSA, R> {
     /**
      * Class constructor
-     *
-     * @param _source subscriber source
      */
-    constructor(private _source: Observable<T>) {
+    constructor() {
     }
 
     /**
@@ -33,42 +36,37 @@ class IsEmptyKeyOperator<T> implements Operator<T, T> {
      *
      * @return {AnonymousSubscription|Subscription|Promise<PushSubscription>|TeardownLogic}
      */
-    call(subscriber: Subscriber<T>, source: any): any {
-        return source.subscribe(new IsEmptyKeySubscriber(subscriber, this._source));
+    call(subscriber: Subscriber<R>, source: Observable<NodeRSA>): any {
+        return source.subscribe(new IsEmptyKeySubscriber(subscriber));
     }
 }
 
 /**
  * Operator subscriber class definition
  */
-class IsEmptyKeySubscriber<T> extends Subscriber<T> {
+class IsEmptyKeySubscriber<R> extends Subscriber<NodeRSA> {
     /**
      * Class constructor
      *
      * @param destination subscriber destination
-     * @param _source subscriber source
      */
-    constructor(destination: Subscriber<T>, private _source: Observable<T>) {
+    constructor(destination: Subscriber<R>) {
         super(destination);
     }
 
     /**
      * Function to send result to next subscriber
      *
-     * @param value result for next subscriber
+     * @param nodeRSA object from previous subscriber
      *
      * @private
      */
-    protected _next(value: T): void {
-        this._source.subscribe((nodeRSA) => {
-                try {
-                    const k = (<any> nodeRSA).isEmpty();
-                    this.destination.next(k);
-                    this.destination.complete();
-                } catch (e) {
-                    this.destination.error(e);
-                }
-            }
-        );
+    protected _next(nodeRSA: NodeRSA): void {
+        try {
+            this.destination.next(nodeRSA.isEmpty());
+            this.destination.complete();
+        } catch (e) {
+            this.destination.error(e);
+        }
     }
 }

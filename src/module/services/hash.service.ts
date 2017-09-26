@@ -1,7 +1,6 @@
 import { Injectable } from '@hapiness/core';
 import { Observable } from 'rxjs/Observable';
 import { pbkdf2 } from 'crypto';
-import { Buffer } from 'buffer';
 import 'rxjs/add/observable/bindNodeCallback';
 
 @Injectable()
