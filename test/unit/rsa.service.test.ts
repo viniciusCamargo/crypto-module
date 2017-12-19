@@ -12,20 +12,36 @@ import { Observable } from 'rxjs/Observable';
 
 // element to test
 import { RSAService } from '../../src';
-import '../../src/observable/add/rsa/importKey';
-import '../../src/observable/add/rsa/exportKey';
-import '../../src/observable/add/rsa/isPrivate';
-import '../../src/observable/add/rsa/isPublic';
-import '../../src/observable/add/rsa/generateKeyPair';
-import '../../src/observable/add/rsa/isEmptyKey';
-import '../../src/observable/add/rsa/getKeySize';
-import '../../src/observable/add/rsa/getMaxMessageSize';
-import '../../src/observable/add/rsa/encryptPublic';
-import '../../src/observable/add/rsa/encryptPrivate';
-import '../../src/observable/add/rsa/decryptPrivate';
-import '../../src/observable/add/rsa/decryptPublic';
-import '../../src/observable/add/rsa/sign';
-import '../../src/observable/add/rsa/verify';
+import '../../src/rsa/add/operator/importKey';
+import '../../src/rsa/add/operator/exportKey';
+import '../../src/rsa/add/operator/isPrivate';
+import '../../src/rsa/add/operator/isPublic';
+import '../../src/rsa/add/operator/generateKeyPair';
+import '../../src/rsa/add/operator/isEmptyKey';
+import '../../src/rsa/add/operator/getKeySize';
+import '../../src/rsa/add/operator/getMaxMessageSize';
+import '../../src/rsa/add/operator/encryptPublic';
+import '../../src/rsa/add/operator/encryptPrivate';
+import '../../src/rsa/add/operator/decryptPrivate';
+import '../../src/rsa/add/operator/decryptPublic';
+import '../../src/rsa/add/operator/sign';
+import '../../src/rsa/add/operator/verify';
+import {
+    importKey,
+    exportKey,
+    isPrivate,
+    isPublic,
+    generateKeyPair,
+    isEmptyKey,
+    getKeySize,
+    getMaxMessageSize,
+    encryptPublic,
+    encryptPrivate,
+    decryptPublic,
+    decryptPrivate,
+    sign,
+    verify
+} from '../../src/rsa/operators';
 
 @suite('- Unit RSAServiceTest file')
 export class RSAServiceTest {
@@ -93,11 +109,35 @@ export class RSAServiceTest {
     }
 
     /**
+     * Test if `RSAService.createKey().importKey()` lettable operator returns an Observable
+     */
+    @test('- `RSAService.createKey().importKey()` lettable operator must return an Observable')
+    testRsaServiceLettableImportKeyObservable() {
+        unit.object(this._rsaService.createKey()
+            .pipe(
+                importKey(null)
+            )
+        ).isInstanceOf(Observable);
+    }
+
+    /**
      * Test if `RSAService.createKey().generateKeyPair()` function returns an Observable
      */
     @test('- `RSAService.createKey().generateKeyPair()` function must return an Observable')
     testRsaServiceGenerateKeyPairObservable() {
         unit.object(this._rsaService.createKey().generateKeyPair()).isInstanceOf(Observable);
+    }
+
+    /**
+     * Test if `RSAService.createKey().generateKeyPair()` lettable operator returns an Observable
+     */
+    @test('- `RSAService.createKey().generateKeyPair()` lettable operator must return an Observable')
+    testRsaServiceLettableGenerateKeyPairObservable() {
+        unit.object(this._rsaService.createKey()
+            .pipe(
+                generateKeyPair()
+            )
+        ).isInstanceOf(Observable);
     }
 
     /**
@@ -109,11 +149,35 @@ export class RSAServiceTest {
     }
 
     /**
+     * Test if `RSAService.loadKey().exportKey()` lettable operator returns an Observable
+     */
+    @test('- `RSAService.loadKey().exportKey()` lettable operator must return an Observable')
+    testRsaServiceLettableExportKeyObservable() {
+        unit.object(this._rsaService.loadKey(null)
+            .pipe(
+                exportKey(null)
+            )
+        ).isInstanceOf(Observable);
+    }
+
+    /**
      * Test if `RSAService.loadKey().isPrivate()` function returns an Observable
      */
     @test('- `RSAService.loadKey().isPrivate()` function must return an Observable')
     testRsaServiceIsPrivateKeyObservable() {
         unit.object(this._rsaService.loadKey(null).isPrivate()).isInstanceOf(Observable);
+    }
+
+    /**
+     * Test if `RSAService.loadKey().isPrivate()` lettable operator returns an Observable
+     */
+    @test('- `RSAService.loadKey().isPrivate()` lettable operator must return an Observable')
+    testRsaServiceLettableIsPrivateKeyObservable() {
+        unit.object(this._rsaService.loadKey(null)
+            .pipe(
+                isPrivate()
+            )
+        ).isInstanceOf(Observable);
     }
 
     /**
@@ -125,11 +189,35 @@ export class RSAServiceTest {
     }
 
     /**
+     * Test if `RSAService.loadKey().isPublic()` lettable operator returns an Observable
+     */
+    @test('- `RSAService.loadKey().isPublic()` lettable operator must return an Observable')
+    testRsaServiceLettableIsPublicKeyObservable() {
+        unit.object(this._rsaService.loadKey(null)
+            .pipe(
+                isPublic()
+            )
+        ).isInstanceOf(Observable);
+    }
+
+    /**
      * Test if `RSAService.loadKey().isEmptyKey()` function returns an Observable
      */
     @test('- `RSAService.loadKey().isEmptyKey()` function must return an Observable')
     testRsaServiceIsEmptyKeyObservable() {
         unit.object(this._rsaService.loadKey(null).isEmptyKey()).isInstanceOf(Observable);
+    }
+
+    /**
+     * Test if `RSAService.loadKey().isEmptyKey()` lettable operator returns an Observable
+     */
+    @test('- `RSAService.loadKey().isEmptyKey()` lettable operator must return an Observable')
+    testRsaServiceLettableIsEmptyKeyObservable() {
+        unit.object(this._rsaService.loadKey(null)
+            .pipe(
+                isEmptyKey()
+            )
+        ).isInstanceOf(Observable);
     }
 
     /**
@@ -141,11 +229,35 @@ export class RSAServiceTest {
     }
 
     /**
+     * Test if `RSAService.loadKey().getKeySize()` lettable operator returns an Observable
+     */
+    @test('- `RSAService.loadKey().getKeySize()` lettable operator must return an Observable')
+    testRsaServiceLettableKeySizeObservable() {
+        unit.object(this._rsaService.loadKey(null)
+            .pipe(
+                getKeySize()
+            )
+        ).isInstanceOf(Observable);
+    }
+
+    /**
      * Test if `RSAService.loadKey().getMaxMessageSize()` function returns an Observable
      */
     @test('- `RSAService.loadKey().getMaxMessageSize()` function must return an Observable')
     testRsaServiceMaxMessageSizeObservable() {
         unit.object(this._rsaService.loadKey(null).getMaxMessageSize()).isInstanceOf(Observable);
+    }
+
+    /**
+     * Test if `RSAService.loadKey().getMaxMessageSize()` lettable operator returns an Observable
+     */
+    @test('- `RSAService.loadKey().getMaxMessageSize()` lettable operator must return an Observable')
+    testRsaServiceLettableMaxMessageSizeObservable() {
+        unit.object(this._rsaService.loadKey(null)
+            .pipe(
+                getMaxMessageSize()
+            )
+        ).isInstanceOf(Observable);
     }
 
     /**
@@ -157,11 +269,35 @@ export class RSAServiceTest {
     }
 
     /**
+     * Test if `RSAService.loadKey().encryptPublic()` lettable operator returns an Observable
+     */
+    @test('- `RSAService.loadKey().encryptPublic()` lettable operator must return an Observable')
+    testRsaServiceLettableEncryptPublicObservable() {
+        unit.object(this._rsaService.loadKey(null)
+            .pipe(
+                encryptPublic(null)
+            )
+        ).isInstanceOf(Observable);
+    }
+
+    /**
      * Test if `RSAService.loadKey().encryptPrivate()` function returns an Observable
      */
     @test('- `RSAService.loadKey().encryptPrivate()` function must return an Observable')
     testRsaServiceEncryptPrivateObservable() {
         unit.object(this._rsaService.loadKey(null).encryptPrivate(null)).isInstanceOf(Observable);
+    }
+
+    /**
+     * Test if `RSAService.loadKey().encryptPrivate()` lettable operator returns an Observable
+     */
+    @test('- `RSAService.loadKey().encryptPrivate()` lettable operator must return an Observable')
+    testRsaServiceLettableEncryptPrivateObservable() {
+        unit.object(this._rsaService.loadKey(null)
+            .pipe(
+                encryptPrivate(null)
+            )
+        ).isInstanceOf(Observable);
     }
 
     /**
@@ -173,11 +309,35 @@ export class RSAServiceTest {
     }
 
     /**
+     * Test if `RSAService.loadKey().decryptPrivate()` lettable operator returns an Observable
+     */
+    @test('- `RSAService.loadKey().decryptPrivate()` lettable operator must return an Observable')
+    testRsaServiceLettableDecryptPrivateObservable() {
+        unit.object(this._rsaService.loadKey(null)
+            .pipe(
+                decryptPrivate(null)
+            )
+        ).isInstanceOf(Observable);
+    }
+
+    /**
      * Test if `RSAService.loadKey().decryptPublic()` function returns an Observable
      */
     @test('- `RSAService.loadKey().decryptPublic()` function must return an Observable')
     testRsaServiceDecryptPublicObservable() {
         unit.object(this._rsaService.loadKey(null).decryptPublic(null)).isInstanceOf(Observable);
+    }
+
+    /**
+     * Test if `RSAService.loadKey().decryptPublic()` lettable operator returns an Observable
+     */
+    @test('- `RSAService.loadKey().decryptPublic()` lettable operator must return an Observable')
+    testRsaServiceLettableDecryptPublicObservable() {
+        unit.object(this._rsaService.loadKey(null)
+            .pipe(
+                decryptPublic(null)
+            )
+        ).isInstanceOf(Observable);
     }
 
     /**
@@ -189,10 +349,34 @@ export class RSAServiceTest {
     }
 
     /**
+     * Test if `RSAService.loadKey().sign()` lettable operator returns an Observable
+     */
+    @test('- `RSAService.loadKey().sign()` lettable operator must return an Observable')
+    testRsaServiceLettableSignObservable() {
+        unit.object(this._rsaService.loadKey(null)
+            .pipe(
+                sign(null)
+            )
+        ).isInstanceOf(Observable);
+    }
+
+    /**
      * Test if `RSAService.loadKey().verify()` function returns an Observable
      */
     @test('- `RSAService.loadKey().verify()` function must return an Observable')
     testRsaServiceVerifyObservable() {
         unit.object(this._rsaService.loadKey(null).verify(null, null)).isInstanceOf(Observable);
+    }
+
+    /**
+     * Test if `RSAService.loadKey().verify()` lettable operator returns an Observable
+     */
+    @test('- `RSAService.loadKey().verify()` lettable operator must return an Observable')
+    testRsaServiceLettableVerifyObservable() {
+        unit.object(this._rsaService.loadKey(null)
+            .pipe(
+                verify(null, null)
+            )
+        ).isInstanceOf(Observable);
     }
 }

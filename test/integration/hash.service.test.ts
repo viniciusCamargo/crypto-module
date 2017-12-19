@@ -63,7 +63,8 @@ export class HashServiceTest {
     @test('- `HashService.generate()` function must return an Observable with error if parameters are wrong')
     testHashServiceGenerateObservable(done) {
         this._hashService.generate(null, null, null, null, null)
-            .subscribe(null, error => unit.object(error).hasProperty('message', 'Pass phrase must be a buffer').when(_ => done()));
+            .subscribe(null, error => unit.object(error)
+                .hasProperty('message', 'The "password" argument must be one of type string, Buffer, or TypedArray').when(_ => done()));
     }
 
     /**

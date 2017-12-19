@@ -8,10 +8,16 @@ import { suite, test } from 'mocha-typescript';
  */
 import * as unit from 'unit.js';
 
-import 'rxjs/add/operator/mergeMap';
+import { flatMap } from 'rxjs/operators';
 
 // element to test
-import { PEMService, CertificateCreationResult, PrivateKeyCreationResult, DhParamKeyCreationResult, PKCS12CreationResult } from '../../src';
+import {
+    PEMService,
+    CertificateCreationResult,
+    PrivateKeyCreationResult,
+    DhParamKeyCreationResult,
+    PKCS12CreationResult
+} from '../../src';
 
 @suite('- Integration PEMServiceTest file')
 export class PEMServiceTest {
@@ -91,7 +97,9 @@ export class PEMServiceTest {
         '`{country, state, locality, organization, organizationUnit, commonName, emailAddress}`')
     testPemServiceReadCertificateInfoObservable(done) {
         this._pemService.createCertificate()
-            .flatMap((c: CertificateCreationResult) => this._pemService.readCertificateInfo(c.certificate))
+            .pipe(
+                flatMap((c: CertificateCreationResult) => this._pemService.readCertificateInfo(c.certificate))
+            )
             .subscribe(certificateSubjectReadResult => unit.object(certificateSubjectReadResult)
                 .hasOwnProperty('country')
                 .hasOwnProperty('state')
@@ -108,7 +116,10 @@ export class PEMServiceTest {
      */
     @test('- `PEMService.getPublicKey()` Observable must return `PublicKeyCreationResult` object `{publicKey}`')
     testPemServiceGetPublicKeyObservable(done) {
-        this._pemService.createPrivateKey().flatMap((c: PrivateKeyCreationResult) => this._pemService.getPublicKey(c.key))
+        this._pemService.createPrivateKey()
+            .pipe(
+                flatMap((c: PrivateKeyCreationResult) => this._pemService.getPublicKey(c.key))
+            )
             .subscribe(publicKeyCreationResult => unit.object(publicKeyCreationResult)
                 .hasOwnProperty('publicKey')
                 .when(_ => done()));
@@ -131,7 +142,9 @@ export class PEMServiceTest {
     @test('- `PEMService.getFingerprint()` Observable must return `FingerprintResult` object `{fingerprint}`')
     testPemServiceGetFingerprintObservable(done) {
         this._pemService.createCertificate()
-            .flatMap((c: CertificateCreationResult) => this._pemService.getFingerprint(c.certificate))
+            .pipe(
+                flatMap((c: CertificateCreationResult) => this._pemService.getFingerprint(c.certificate))
+            )
             .subscribe(fingerprintResult => unit.object(fingerprintResult)
                 .hasOwnProperty('fingerprint')
                 .when(_ => done()));
@@ -143,7 +156,9 @@ export class PEMServiceTest {
     @test('- `PEMService.getModulus()` Observable must return `ModulusResult` object `{modulus}`')
     testPemServiceGetModulusObservable(done) {
         this._pemService.createCertificate()
-            .flatMap((c: CertificateCreationResult) => this._pemService.getModulus(c.certificate))
+            .pipe(
+                flatMap((c: CertificateCreationResult) => this._pemService.getModulus(c.certificate))
+            )
             .subscribe(modulusResult => unit.object(modulusResult)
                 .hasOwnProperty('modulus')
                 .when(_ => done()));
@@ -155,7 +170,9 @@ export class PEMServiceTest {
     @test('- `PEMService.getDhparamInfo()` Observable must return `DhParamInfoResult` object `{size, prime}`')
     testPemServiceGetDhparamInfoObservable(done) {
         this._pemService.createDhparam()
-            .flatMap((dh: DhParamKeyCreationResult) => this._pemService.getDhparamInfo(dh.dhparam))
+            .pipe(
+                flatMap((dh: DhParamKeyCreationResult) => this._pemService.getDhparamInfo(dh.dhparam))
+            )
             .subscribe(dhParamInfoResult => unit.object(dhParamInfoResult)
                 .hasOwnProperty('size')
                 .hasOwnProperty('prime')
@@ -168,13 +185,19 @@ export class PEMServiceTest {
     @test('- `PEMService.createPkcs12()` Observable must return `PKCS12CreationResult` object `{pkcs12}`')
     testPemServiceCreatePkcs12Observable(done) {
         this._pemService.createPrivateKey()
-            .flatMap((pk: PrivateKeyCreationResult) => this._pemService.createCertificate({
-                clientKey: pk.key,
-                selfSigned: true
-            }).flatMap((c: CertificateCreationResult) => this._pemService.createPkcs12(c.clientKey, c.certificate, 'password')))
+            .pipe(
+                flatMap((pk: PrivateKeyCreationResult) =>
+                    this._pemService.createCertificate({
+                        clientKey: pk.key,
+                        selfSigned: true
+                    })
+                ),
+                flatMap((c: CertificateCreationResult) => this._pemService.createPkcs12(c.clientKey, c.certificate, 'password'))
+            )
             .subscribe(pkcs12Result => unit.object(pkcs12Result)
                 .hasOwnProperty('pkcs12')
-                .when(_ => done()));
+                .when(_ => done()),
+                error => done(error));
     }
 
     /**
@@ -191,11 +214,16 @@ export class PEMServiceTest {
     @test('- `PEMService.checkPkcs12()` Observable must return `true`')
     testPemServiceCheckPkcs12Observable(done) {
         this._pemService.createPrivateKey()
-            .flatMap((pk: PrivateKeyCreationResult) => this._pemService.createCertificate({
-                clientKey: pk.key,
-                selfSigned: true
-            }).flatMap((c: CertificateCreationResult) => this._pemService.createPkcs12(c.clientKey, c.certificate, 'password')))
-            .flatMap((pkcs12Result: PKCS12CreationResult) => this._pemService.checkPkcs12(pkcs12Result.pkcs12, 'password'))
+            .pipe(
+                flatMap((pk: PrivateKeyCreationResult) =>
+                    this._pemService.createCertificate({
+                        clientKey: pk.key,
+                        selfSigned: true
+                    })
+                ),
+                flatMap((c: CertificateCreationResult) => this._pemService.createPkcs12(c.clientKey, c.certificate, 'password')),
+                flatMap((pkcs12Result: PKCS12CreationResult) => this._pemService.checkPkcs12(pkcs12Result.pkcs12, 'password'))
+            )
             .subscribe(isValid => unit.bool(isValid).isTrue().when(_ => done()));
     }
 
@@ -205,9 +233,18 @@ export class PEMServiceTest {
     @test('- `PEMService.verifySigningChain()` Observable must return true')
     testPemServiceVerifySigningChainObservable(done) {
         this._pemService.createCertificate({ commonName: 'CA Certificate' })
-            .flatMap((ca: CertificateCreationResult) => this._pemService.createCertificate({
-                serviceKey: ca.serviceKey, serviceCertificate: ca.certificate, serial: Date.now()
-            }).flatMap((cert: CertificateCreationResult) => this._pemService.verifySigningChain(cert.certificate, ca.certificate)))
+            .pipe(
+                flatMap((ca: CertificateCreationResult) =>
+                    this._pemService.createCertificate({
+                        serviceKey: ca.serviceKey, serviceCertificate: ca.certificate, serial: Date.now()
+                    })
+                        .pipe(
+                            flatMap((cert: CertificateCreationResult) =>
+                                this._pemService.verifySigningChain(cert.certificate, ca.certificate)
+                            )
+                        )
+                )
+            )
             .subscribe(v => unit.bool(v).isTrue().when(_ => done()));
     }
 
@@ -217,7 +254,9 @@ export class PEMServiceTest {
     @test('- `PEMService.checkCertificate()` Observable must return true')
     testPemServiceCheckCertificateObservable(done) {
         this._pemService.createCertificate()
-            .flatMap((ca: CertificateCreationResult) => this._pemService.checkCertificate(ca.certificate))
+            .pipe(
+                flatMap((ca: CertificateCreationResult) => this._pemService.checkCertificate(ca.certificate))
+            )
             .subscribe(v => unit.bool(v).isTrue().when(_ => done()));
     }
 }

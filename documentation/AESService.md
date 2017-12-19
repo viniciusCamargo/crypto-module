@@ -81,11 +81,27 @@ Encrypting `data` method with `AES key`. This method is an `Observable's` `opera
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/aes/encryptWithAesKey';
+import '@hapiness/crypto/aes/add/operator/encryptWithAesKey';
 
 ...
 
 this._aesService.createKey('P3HQdR35PUQLZ5ioOrsPlxx7QWra7WQl', 'Kt9V3wgxrhpf8GN3').encryptWithAesKey(new Buffer('data'))
+    .subscribe(
+        (buffer: Buffer) => console.log(buffer.toString('hex')), // Show `a3d4bb8fcb8ec0e24a86cef07a28e3af` in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
+**Example - Lettable operators:**
+```javascript
+import { encryptWithAesKey } from '@hapiness/crypto/aes/operators';
+
+...
+
+this._aesService.createKey('P3HQdR35PUQLZ5ioOrsPlxx7QWra7WQl', 'Kt9V3wgxrhpf8GN3')
+    .pipe(
+        encryptWithAesKey(new Buffer('data'))
+    )
     .subscribe(
         (buffer: Buffer) => console.log(buffer.toString('hex')), // Show `a3d4bb8fcb8ec0e24a86cef07a28e3af` in the console
         e => console.error(e.message) // Show error message in the console
@@ -106,7 +122,7 @@ Decrypting `data` method with `AES key`. This method is an `Observable's` `opera
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/aes/decryptWithAesKey';
+import '@hapiness/crypto/aes/add/operator/decryptWithAesKey';
 
 ...
 
@@ -117,11 +133,27 @@ this._aesService.createKey('P3HQdR35PUQLZ5ioOrsPlxx7QWra7WQl', 'Kt9V3wgxrhpf8GN3
     );
 ```
 
+**Example - Lettable operators:**
+```javascript
+import { decryptWithAesKey } from '@hapiness/crypto/aes/operators';
+
+...
+
+this._aesService.createKey('P3HQdR35PUQLZ5ioOrsPlxx7QWra7WQl', 'Kt9V3wgxrhpf8GN3')
+    .pipe(
+        decryptWithAesKey(new Buffer('a3d4bb8fcb8ec0e24a86cef07a28e3af', 'hex'))
+    )
+    .subscribe(
+        (buffer: Buffer) => console.log(buffer.toString()), // Show `data` in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
 [Back to top](#table-of-contents)
 
 ## Change History
 
-* Implementation of all methods (2017-07-28)
+* Implementation of all methods (2017-12-19)
     * [.createKey(password, salt)](#createkeypassword-salt)
     * [.encryptWithAesKey(data)](#encryptwithaeskeydata)
     * [.decryptWithAesKey(data)](#decryptwithaeskeydata)

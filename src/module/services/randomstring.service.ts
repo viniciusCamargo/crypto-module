@@ -1,6 +1,7 @@
 import { Injectable } from '@hapiness/core';
 import { Observable } from 'rxjs/Observable';
 import { GenerateOptions, generate } from 'randomstring';
+import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class RandomstringService {
@@ -12,10 +13,7 @@ export class RandomstringService {
      * @return {Observable<string>}
      */
     generate(options?: GenerateOptions | number): Observable<string> {
-        return Observable.create(observer => {
-            observer.next(generate(options));
-            observer.complete();
-        });
+        return of(generate(options));
     }
 }
 

@@ -9,14 +9,15 @@ import { suite, test } from 'mocha-typescript';
 import * as unit from 'unit.js';
 
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/throw';
+import { of } from 'rxjs/observable/of';
+import { _throw } from 'rxjs/observable/throw';
 import { Buffer } from 'buffer';
 
 // element to test
 import { AESService, HashService } from '../../src';
-import '../../src/observable/add/aes/encryptWithAesKey';
-import '../../src/observable/add/aes/decryptWithAesKey';
+import '../../src/aes/add/operator/encryptWithAesKey';
+import '../../src/aes/add/operator/decryptWithAesKey';
+import { encryptWithAesKey, decryptWithAesKey } from '../../src/aes/operators';
 
 @suite('- Unit AESServiceTest file')
 export class AESServiceTest {
@@ -76,7 +77,7 @@ export class AESServiceTest {
      */
     @test('- `AESService.createKey()` function must return an Observable with error if AES key parameters are wrong')
     testAesServiceCreateKeyObservableError(done) {
-        this._hashServiceMock.expects('generate').returns(Observable.throw(new Error('Wrong AES key')));
+        this._hashServiceMock.expects('generate').returns(_throw(new Error('Wrong AES key')));
 
         this._aesService.createKey(null, null)
             .subscribe(null, error => {
@@ -94,7 +95,7 @@ export class AESServiceTest {
     @test('- `AESService.createKey().encryptWithAesKey()` function must return an Observable')
     testAesServiceEncryptWithAesKeyObservable(done) {
         this._hashServiceMock.expects('generate')
-            .returns(Observable.of(
+            .returns(of(
                 Buffer.from('61cac683ff27580e4c68778df5208c745b0e4731727786586938c794a37f441931cef43b785870e993cbc94aee0354cf', 'hex')));
 
         unit.object(this._aesService.createKey(this._password, this._salt).encryptWithAesKey(null))
@@ -111,10 +112,52 @@ export class AESServiceTest {
     @test('- `AESService.createKey().decryptWithAesKey()` function must return an Observable')
     testAesServiceDecryptWithAesKeyObservable(done) {
         this._hashServiceMock.expects('generate')
-            .returns(Observable.of(
+            .returns(of(
                 Buffer.from('61cac683ff27580e4c68778df5208c745b0e4731727786586938c794a37f441931cef43b785870e993cbc94aee0354cf', 'hex')));
 
         unit.object(this._aesService.createKey(this._password, this._salt).decryptWithAesKey(null))
+            .isInstanceOf(Observable).when(_ => {
+            this._hashServiceMock.verify();
+            this._hashServiceMock.restore();
+            done();
+        });
+    }
+
+    /**
+     * Test if `AESService.createKey().encryptWithAesKey()` lettable operator returns an Observable
+     */
+    @test('- `AESService.createKey().encryptWithAesKey()` lettable operator must return an Observable')
+    testAesServiceLettableEncryptWithAesKeyObservable(done) {
+        this._hashServiceMock.expects('generate')
+            .returns(of(
+                Buffer.from('61cac683ff27580e4c68778df5208c745b0e4731727786586938c794a37f441931cef43b785870e993cbc94aee0354cf', 'hex')));
+
+        unit.object(this._aesService.createKey(this._password, this._salt)
+            .pipe(
+                encryptWithAesKey(null)
+            )
+        )
+            .isInstanceOf(Observable).when(_ => {
+            this._hashServiceMock.verify();
+            this._hashServiceMock.restore();
+            done();
+        });
+    }
+
+    /**
+     * Test if `AESService.createKey().decryptWithAesKey()` lettable operator returns an Observable
+     */
+    @test('- `AESService.createKey().decryptWithAesKey()` lettable operator must return an Observable')
+    testAesServiceLettableDecryptWithAesKeyObservable(done) {
+        this._hashServiceMock.expects('generate')
+            .returns(of(
+                Buffer.from('61cac683ff27580e4c68778df5208c745b0e4731727786586938c794a37f441931cef43b785870e993cbc94aee0354cf', 'hex')));
+
+        unit.object(this._aesService.createKey(this._password, this._salt)
+            .pipe(
+                decryptWithAesKey(null)
+            )
+        )
             .isInstanceOf(Observable).when(_ => {
             this._hashServiceMock.verify();
             this._hashServiceMock.restore();

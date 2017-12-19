@@ -74,7 +74,7 @@ this._hashService.generate('P3HQdR35PUQLZ5ioOrsPlxx7QWra7WQl', 'Kt9V3wgxrhpf8GN3
 
 ## Change History
 
-* Implementation of all methods (2017-07-28)
+* Implementation of all methods (2017-12-19)
     * [.generate(data,salt,iterations,keylen,digest)](#generatedata-salt-iterations-keylen-digest)
 
 [Back to top](#table-of-contents)

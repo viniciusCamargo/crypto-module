@@ -1,7 +1,7 @@
 import { Injectable } from '@hapiness/core';
 import { Observable } from 'rxjs/Observable';
 import { pbkdf2 } from 'crypto';
-import 'rxjs/add/observable/bindNodeCallback';
+import { bindNodeCallback } from 'rxjs/observable/bindNodeCallback';
 
 @Injectable()
 export class HashService {
@@ -22,6 +22,6 @@ export class HashService {
      */
     generate(data: string | Buffer, salt: string | Buffer, iterations: number, keylen: number, digest: string): Observable<Buffer> {
         return (<(data: string | Buffer, salt: string | Buffer, iterations: number, keylen: number, digest: string) =>
-            Observable<Buffer>> Observable.bindNodeCallback(pbkdf2))(data, salt, iterations, keylen, digest);
+            Observable<Buffer>> bindNodeCallback(pbkdf2))(data, salt, iterations, keylen, digest);
     }
 }
