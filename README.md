@@ -65,9 +65,9 @@ $ yarn add @hapiness/core @hapiness/crypto rxjs
 
 ```javascript
 "dependencies": {
-    "@hapiness/core": "^1.0.0-rc.7",
-    "@hapiness/crypto": "^1.0.0-rc.7",
-    "rxjs": "^5.4.3",
+    "@hapiness/core": "^1.3.0",
+    "@hapiness/crypto": "^1.0.0",
+    "rxjs": "^5.5.5",
     //...
 }
 //...
@@ -142,23 +142,12 @@ To set up your development environment:
 
 ## Change History
 
-* v1.0.0-rc.7 (2017-09-26)
-    * Implementation of `PemService.checkPkcs12()` and `PemService.checkCertificate()`.
-    * Fix all operators related to latest `rxjs` version.
-    * Related tests.
-    * Latest packages' versions.
-    * Documentation.
-    * Module version related to core version.
-* v1.0.0-rc.6.2 (2017-08-02)
-    * Implementation of `JWTService`
-    * Related tests.
-    * Documentation.
-* v1.0.0-rc.6 (2017-07-28)
+* v1.0.0 (2017-12-19)
     * Implementation of `CryptoModule` with `AESService`, `HashService`, `PEMService`, `RandomstringService` and `RSAService`
     * Implementation of `Observable's` operators for `AESService` and `RSAService` features.
+    * Implementation of `Lettable operators` for `AESService` and `RSAService` features.
     * Related tests.
     * Documentation.
-    * Module version related to core version.
 
 ## Maintainers
 

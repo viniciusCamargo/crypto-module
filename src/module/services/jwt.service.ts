@@ -11,6 +11,8 @@ import {
     decode
 } from 'jsonwebtoken';
 import { Observable } from 'rxjs/Observable';
+import { bindNodeCallback } from 'rxjs/observable/bindNodeCallback';
+import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class JWTService {
@@ -42,7 +44,7 @@ export class JWTService {
      */
     sign(payload: string | Buffer | object, secretOrPrivateKey: string | Buffer, options?: SignOptions): Observable<string> {
         return (<(payload: string | Buffer | object, secretOrPrivateKey: string | Buffer, options?: SignOptions) =>
-            Observable<string>> Observable.bindNodeCallback(sign))(payload, secretOrPrivateKey, options);
+            Observable<string>> bindNodeCallback(sign))(payload, secretOrPrivateKey, options);
     }
 
     /**
@@ -56,7 +58,7 @@ export class JWTService {
      */
     verify(token: string, secretOrPublicKey: string | Buffer, options?: VerifyOptions): Observable<object | string> {
         return (<(token: string, secretOrPublicKey: string | Buffer, options?: VerifyOptions) =>
-            Observable<string>> Observable.bindNodeCallback(verify))(token, secretOrPublicKey, options);
+            Observable<string>> bindNodeCallback(verify))(token, secretOrPublicKey, options);
     }
 
     /**
@@ -68,7 +70,7 @@ export class JWTService {
      * @return {Observable<Object | string>} The decoded Token or null if no payload in JWT.
      */
     decode(token: string, options?: DecodeOptions): Observable<null | object | string> {
-        return Observable.of(decode(token, options));
+        return of(decode(token, options));
     }
 }
 

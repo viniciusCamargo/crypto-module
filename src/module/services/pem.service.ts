@@ -7,7 +7,8 @@ import {
     HashFunction, Pkcs12CreationOptions, Pkcs12ReadOptions,
     PrivateKeyCreationOptions
 } from 'pem';
-import 'rxjs/add/observable/bindNodeCallback';
+import { flatMap, map } from 'rxjs/operators';
+import { bindNodeCallback } from 'rxjs/observable/bindNodeCallback';
 
 /**
  * Private key definition
@@ -107,7 +108,7 @@ export class PEMService {
      */
     createPrivateKey(keyBitsize?: number, options?: PrivateKeyCreationOptions): Observable<PrivateKeyCreationResult> {
         return (<(keyBitsize?: number, options?: PrivateKeyCreationOptions) =>
-            Observable<PrivateKeyCreationResult>> Observable.bindNodeCallback(pem.createPrivateKey))(keyBitsize, options);
+            Observable<PrivateKeyCreationResult>> bindNodeCallback(pem.createPrivateKey))(keyBitsize, options);
     }
 
     /**
@@ -118,7 +119,7 @@ export class PEMService {
      * @return {Observable<DhParamKeyCreationResult>} { dhparam }
      */
     createDhparam(keyBitsize?: number): Observable<DhParamKeyCreationResult> {
-        return (<(keyBitsize?: number) => Observable<DhParamKeyCreationResult>> Observable.bindNodeCallback(pem.createDhparam))(keyBitsize);
+        return (<(keyBitsize?: number) => Observable<DhParamKeyCreationResult>> bindNodeCallback(pem.createDhparam))(keyBitsize);
     }
 
     /**
@@ -132,7 +133,7 @@ export class PEMService {
      * @return {Observable<CSRCreationResult>} {csr, clientKey}
      */
     createCSR(options?: CSRCreationOptions): Observable<CSRCreationResult> {
-        return (<(options?: CSRCreationOptions) => Observable<CSRCreationResult>> Observable.bindNodeCallback(pem.createCSR))(options);
+        return (<(options?: CSRCreationOptions) => Observable<CSRCreationResult>> bindNodeCallback(pem.createCSR))(options);
     }
 
     /**
@@ -146,7 +147,7 @@ export class PEMService {
      */
     createCertificate(options?: CertificateCreationOptions): Observable<CertificateCreationResult> {
         return (<(options?: CertificateCreationOptions) =>
-            Observable<CertificateCreationResult>> Observable.bindNodeCallback(pem.createCertificate))(options);
+            Observable<CertificateCreationResult>> bindNodeCallback(pem.createCertificate))(options);
     }
 
     /**
@@ -158,7 +159,7 @@ export class PEMService {
      *  {country, state, locality, organization, organizationUnit, commonName, emailAddress}
      */
     readCertificateInfo(certificate: string): Observable<CertificateSubjectReadResult> {
-        return (<(certificate: string) => Observable<CertificateSubjectReadResult>> Observable.bindNodeCallback(pem.readCertificateInfo))
+        return (<(certificate: string) => Observable<CertificateSubjectReadResult>> bindNodeCallback(pem.readCertificateInfo))
         (certificate);
     }
 
@@ -170,7 +171,7 @@ export class PEMService {
      * @return {Observable<PublicKeyCreationResult>} {publicKey}
      */
     getPublicKey(certificate: string): Observable<PublicKeyCreationResult> {
-        return (<(certificate: string) => Observable<PublicKeyCreationResult>> Observable.bindNodeCallback(pem.getPublicKey))(certificate);
+        return (<(certificate: string) => Observable<PublicKeyCreationResult>> bindNodeCallback(pem.getPublicKey))(certificate);
     }
 
     /**
@@ -182,15 +183,21 @@ export class PEMService {
      * @return {Observable<KeyPairCreationResult>} {key, publicKey}
      */
     createKeyPair(keyBitsize?: number, options?: PrivateKeyCreationOptions): Observable<KeyPairCreationResult> {
-        return this.createPrivateKey(keyBitsize, options).flatMap((privateKeyCreationResult: PrivateKeyCreationResult) =>
-            this.getPublicKey(privateKeyCreationResult.key).map(
-                (publicKeyCreationResult: PublicKeyCreationResult) =>
-                    <KeyPairCreationResult> {
-                        key: privateKeyCreationResult.key,
-                        publicKey: publicKeyCreationResult.publicKey
-                    }
-            )
-        );
+        return this.createPrivateKey(keyBitsize, options)
+            .pipe(
+                flatMap((privateKeyCreationResult: PrivateKeyCreationResult) =>
+                    this.getPublicKey(privateKeyCreationResult.key)
+                        .pipe(
+                            map(
+                                (publicKeyCreationResult: PublicKeyCreationResult) =>
+                                    <KeyPairCreationResult> {
+                                        key: privateKeyCreationResult.key,
+                                        publicKey: publicKeyCreationResult.publicKey
+                                    }
+                            )
+                        )
+                )
+            );
     }
 
     /**
@@ -203,7 +210,7 @@ export class PEMService {
      */
     getFingerprint(certificate: string, hash?: HashFunction): Observable<FingerprintResult> {
         return (<(certificate: string, hash?: HashFunction) =>
-            Observable<FingerprintResult>> Observable.bindNodeCallback(pem.getFingerprint))(certificate, hash);
+            Observable<FingerprintResult>> bindNodeCallback(pem.getFingerprint))(certificate, hash);
     }
 
     /**
@@ -216,7 +223,7 @@ export class PEMService {
      */
     getModulus(certificate: string, password?: string): Observable<ModulusResult> {
         return (<(certificate: string, password?: string) =>
-            Observable<ModulusResult>> Observable.bindNodeCallback(pem.getModulus))(certificate, password);
+            Observable<ModulusResult>> bindNodeCallback(pem.getModulus))(certificate, password);
     }
 
     /**
@@ -227,7 +234,7 @@ export class PEMService {
      * @return {Observable<DhParamInfoResult>} {size, prime}
      */
     getDhparamInfo(dh: string): Observable<DhParamInfoResult> {
-        return (<(dh: string) => Observable<DhParamInfoResult>> Observable.bindNodeCallback(pem.getDhparamInfo))(dh);
+        return (<(dh: string) => Observable<DhParamInfoResult>> bindNodeCallback(pem.getDhparamInfo))(dh);
     }
 
     /**
@@ -243,7 +250,7 @@ export class PEMService {
      */
     createPkcs12(key: string, certificate: string, password: string, options?: Pkcs12CreationOptions): Observable<PKCS12CreationResult> {
         return (<(key: string, certificate: string, password: string, options?: Pkcs12CreationOptions) =>
-            Observable<PKCS12CreationResult>> Observable.bindNodeCallback(pem.createPkcs12))(key, certificate, password, options);
+            Observable<PKCS12CreationResult>> bindNodeCallback(pem.createPkcs12))(key, certificate, password, options || {});
     }
 
     /**
@@ -256,7 +263,7 @@ export class PEMService {
      */
     readPkcs12(bufferOrPath: string, options?: Pkcs12ReadOptions): Observable<PKCS12ReadResult> {
         return (<(bufferOrPath: string, options?: Pkcs12ReadOptions) =>
-            Observable<any>> Observable.bindNodeCallback(pem.readPkcs12))(bufferOrPath, options);
+            Observable<any>> bindNodeCallback(pem.readPkcs12))(bufferOrPath, options);
     }
 
     /**
@@ -269,7 +276,7 @@ export class PEMService {
      */
     checkPkcs12(bufferOrPath: string, passphrase?: string): Observable<boolean> {
         return (<(bufferOrPath: string, passphrase?: string) =>
-            Observable<boolean>> Observable.bindNodeCallback((<any>pem).checkPkcs12))(bufferOrPath, passphrase);
+            Observable<boolean>> bindNodeCallback((<any>pem).checkPkcs12))(bufferOrPath, passphrase);
     }
 
     /**
@@ -282,7 +289,7 @@ export class PEMService {
      */
     verifySigningChain(certificate: string, ca: string[]): Observable<boolean> {
         return (<(certificate: string, ca: string[]) =>
-            Observable<boolean>> Observable.bindNodeCallback(pem.verifySigningChain))(certificate, ca);
+            Observable<boolean>> bindNodeCallback(pem.verifySigningChain))(certificate, ca);
     }
 
     /**
@@ -295,7 +302,7 @@ export class PEMService {
      */
     checkCertificate(certificate: string, passphrase?: string): Observable<boolean> {
         return (<(certificate: string, passphrase?: string) =>
-            Observable<boolean>> Observable.bindNodeCallback((<any>pem).checkCertificate))(certificate, passphrase);
+            Observable<boolean>> bindNodeCallback((<any>pem).checkCertificate))(certificate, passphrase);
     }
 }
 

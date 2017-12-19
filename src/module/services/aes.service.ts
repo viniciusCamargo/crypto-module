@@ -1,7 +1,7 @@
 import { Injectable } from '@hapiness/core';
 import { Observable } from 'rxjs/Observable';
+import { map } from 'rxjs/operators';
 import { HashService } from './hash.service';
-import 'rxjs/add/operator/map';
 
 /**
  * AES key definition
@@ -31,17 +31,19 @@ export class AESService {
     createKey(password: string | Buffer, salt: string | Buffer): Observable<AESKeyCreationResult> {
         // generate derivedKey for this password and salt
         return this._hashService.generate(password, salt, 4096, 48, 'sha256')
-            .map((derivedKey: Buffer) => {
-                // clone buffer
-                const keyBuffer = Buffer.from(derivedKey);
+            .pipe(
+                map((derivedKey: Buffer) => {
+                    // clone buffer
+                    const keyBuffer = Buffer.from(derivedKey);
 
-                // get aes256 key
-                const key = keyBuffer.slice(0, 32).toString('hex');
+                    // get aes256 key
+                    const key = keyBuffer.slice(0, 32).toString('hex');
 
-                // get aes256 iv
-                const iv = derivedKey.slice(32).toString('hex');
+                    // get aes256 iv
+                    const iv = derivedKey.slice(32).toString('hex');
 
-                return { key, iv };
-        });
+                    return { key, iv };
+                })
+            );
     }
 }

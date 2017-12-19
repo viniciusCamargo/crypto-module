@@ -8,14 +8,14 @@ import { suite, test } from 'mocha-typescript';
  */
 import * as unit from 'unit.js';
 
-import 'rxjs/add/observable/of';
+import { of } from 'rxjs/observable/of';
 import { Buffer } from 'buffer';
 
 // element to test
 import { AESService, HashService } from '../../src';
-import '../../src/observable/add/aes/encryptWithAesKey';
-import '../../src/observable/add/aes/decryptWithAesKey';
-import { Observable } from 'rxjs/Observable';
+import '../../src/aes/add/operator/encryptWithAesKey';
+import '../../src/aes/add/operator/decryptWithAesKey';
+import { encryptWithAesKey, decryptWithAesKey } from '../../src/aes/operators';
 
 @suite('- Integration AESServiceTest file')
 export class AESServiceTest {
@@ -56,7 +56,12 @@ export class AESServiceTest {
     @test('- `AESService.createKey()` function must return an Observable with error if AES key parameters are wrong')
     testAesServiceCreateKeyObservableError(done) {
         this._aesService.createKey(null, null)
-            .subscribe(null, error => unit.object(error).hasProperty('message', 'Pass phrase must be a buffer').when(_ => done()));
+            .subscribe(
+                null,
+                error => unit.object(error)
+                    .hasProperty('message', 'The "password" argument must be one of type string, Buffer, or TypedArray')
+                    .when(_ => done())
+            );
     }
 
     /**
@@ -84,6 +89,18 @@ export class AESServiceTest {
     }
 
     /**
+     * Test if `AESService.createKey().encryptWithAesKey()` lettable operator returns Buffer
+     */
+    @test('- `AESService.createKey().encryptWithAesKey()` lettable operator must return a Buffer')
+    testAesServiceLettableEncryptWithAesKeyObservableReturnBuffer(done) {
+        this._aesService.createKey(this._password, this._salt)
+            .pipe(
+                encryptWithAesKey(Buffer.from('data'))
+            )
+            .subscribe(buffer => unit.object(buffer).isInstanceOf(Buffer).when(_ => done()));
+    }
+
+    /**
      * Test if `AESService.createKey().encryptWithAesKey()` Observable returns Buffer and
      *  his string representation is `a3d4bb8fcb8ec0e24a86cef07a28e3af`
      */
@@ -91,7 +108,21 @@ export class AESServiceTest {
         '`a3d4bb8fcb8ec0e24a86cef07a28e3af`')
     testAesServiceEncryptWithAesKeyObservableReturnBufferWithStringRepresentationValue(done) {
         this._aesService.createKey(this._password, this._salt).encryptWithAesKey(Buffer.from('data'))
-            .subscribe((buffer: any) => unit.string(buffer.toString('hex')).is('a3d4bb8fcb8ec0e24a86cef07a28e3af').when(_ =>  done()));
+            .subscribe((buffer: any) => unit.string(buffer.toString('hex')).is('a3d4bb8fcb8ec0e24a86cef07a28e3af').when(_ => done()));
+    }
+
+    /**
+     * Test if `AESService.createKey().encryptWithAesKey()` lettable operator returns Buffer and
+     *  his string representation is `a3d4bb8fcb8ec0e24a86cef07a28e3af`
+     */
+    @test('- `AESService.createKey().encryptWithAesKey()` lettable operator must return a Buffer and his string representation is ' +
+        '`a3d4bb8fcb8ec0e24a86cef07a28e3af`')
+    testAesServiceLettableEncryptWithAesKeyObservableReturnBufferWithStringRepresentationValue(done) {
+        this._aesService.createKey(this._password, this._salt)
+            .pipe(
+                encryptWithAesKey(Buffer.from('data'))
+            )
+            .subscribe((buffer: any) => unit.string(buffer.toString('hex')).is('a3d4bb8fcb8ec0e24a86cef07a28e3af').when(_ => done()));
     }
 
     /**
@@ -104,6 +135,18 @@ export class AESServiceTest {
     }
 
     /**
+     * Test if `AESService.createKey().decryptWithAesKey()` lettable operator returns Buffer
+     */
+    @test('- `AESService.createKey().decryptWithAesKey()` lettable operator must return a Buffer')
+    testAesServiceLettableDecryptWithAesKeyObservableReturnBuffer(done) {
+        this._aesService.createKey(this._password, this._salt)
+            .pipe(
+                decryptWithAesKey(Buffer.from('a3d4bb8fcb8ec0e24a86cef07a28e3af', 'hex'))
+            )
+            .subscribe(buffer => unit.object(buffer).isInstanceOf(Buffer).when(_ => done()));
+    }
+
+    /**
      * Test if `AESService.createKey().decryptWithAesKey()` Observable returns Buffer and
      *  his string representation is `data`
      */
@@ -111,7 +154,21 @@ export class AESServiceTest {
         '`data`')
     testAesServiceDecryptWithAesKeyObservableReturnBufferWithStringRepresentationValue(done) {
         this._aesService.createKey(this._password, this._salt).decryptWithAesKey(Buffer.from('a3d4bb8fcb8ec0e24a86cef07a28e3af', 'hex'))
-            .subscribe((buffer: any) => unit.string(buffer.toString()).is('data').when(_ =>  done()));
+            .subscribe((buffer: any) => unit.string(buffer.toString()).is('data').when(_ => done()));
+    }
+
+    /**
+     * Test if `AESService.createKey().decryptWithAesKey()` lettable operator returns Buffer and
+     *  his string representation is `data`
+     */
+    @test('- `AESService.createKey().decryptWithAesKey()` lettable operator must return a Buffer and his string representation is ' +
+        '`data`')
+    testAesServiceLettableDecryptWithAesKeyObservableReturnBufferWithStringRepresentationValue(done) {
+        this._aesService.createKey(this._password, this._salt)
+            .pipe(
+                decryptWithAesKey(Buffer.from('a3d4bb8fcb8ec0e24a86cef07a28e3af', 'hex'))
+            )
+            .subscribe((buffer: any) => unit.string(buffer.toString()).is('data').when(_ => done()));
     }
 
     /**
@@ -119,17 +176,46 @@ export class AESServiceTest {
      */
     @test('- `AESService.createKey().encryptWithAesKey()` function must return an Observable with error if AES key is wrong')
     testAesServiceEncryptWithAesKeyObservableError(done) {
-        Observable.of({ key: null, iv: null }).encryptWithAesKey(Buffer.from('data'))
+        of({ key: null, iv: null }).encryptWithAesKey(Buffer.from('data'))
             .subscribe(null, error => unit.error(error).when(_ => done()));
     }
+
+    /**
+     * Test if `AESService.createKey().encryptWithAesKey()` lettable operator returns an Observable with error if AES key is wrong
+     */
+    @test('- `AESService.createKey().encryptWithAesKey()` lettable operator must return an Observable with error if AES key is wrong')
+    testAesServiceLettableEncryptWithAesKeyObservableError(done) {
+        of({ key: null, iv: null })
+            .pipe(
+                encryptWithAesKey(Buffer.from('data'))
+            )
+            .subscribe(null, error => unit.error(error).when(_ => done()));
+    }
+
     /**
      * Test if `AESService.createKey().decryptWithAesKey()` function returns an Observable with error if AES key is wrong
      */
     @test('- `AESService.createKey().decryptWithAesKey()` function must return an Observable with error if AES key is wrong')
     testAesServiceDecryptWithAesKeyObservableError(done) {
-        Observable.of({ key: null, iv: null }).decryptWithAesKey(Buffer.from('a3d4bb8fcb8ec0e24a86cef07a28e3af', 'hex'))
+        of({ key: null, iv: null }).decryptWithAesKey(Buffer.from('a3d4bb8fcb8ec0e24a86cef07a28e3af', 'hex'))
             .subscribe(null, error => unit.object(error)
-                .hasProperty('message', 'First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.')
+                    .hasProperty('message', 'The first argument must be one of type string, Buffer, ' +
+                        'ArrayBuffer, Array, or Array-like Object. Received type null')
+                    .when(_ => done()));
+    }
+
+    /**
+     * Test if `AESService.createKey().decryptWithAesKey()` lettable operator returns an Observable with error if AES key is wrong
+     */
+    @test('- `AESService.createKey().decryptWithAesKey()` lettable operator must return an Observable with error if AES key is wrong')
+    testAesServiceLettableDecryptWithAesKeyObservableError(done) {
+        of({ key: null, iv: null })
+            .pipe(
+                decryptWithAesKey(Buffer.from('a3d4bb8fcb8ec0e24a86cef07a28e3af', 'hex'))
+            )
+            .subscribe(null, error => unit.object(error)
+                .hasProperty('message', 'The first argument must be one of type string, Buffer, ' +
+                    'ArrayBuffer, Array, or Array-like Object. Received type null')
                 .when(_ => done()));
     }
 }

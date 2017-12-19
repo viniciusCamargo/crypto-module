@@ -108,7 +108,7 @@ this._randomstringService.generate(
 
 ## Change History
 
-* Implementation of all methods (2017-07-28)
+* Implementation of all methods (2017-12-19)
     * [.generate([options])](#generateoptions)
     
 [Back to top](#table-of-contents)

@@ -216,7 +216,7 @@ none | No digital signature or MAC value included
 
 ## Change History
 
-* Implementation of all methods (2017-08-02)
+* Implementation of all methods (2017-12-19)
     * [.sign(payload, secretOrPrivateKey[, options])](#signpayload-secretorprivatekey-options)
     * [.verify(token, secretOrPublicKey[, options])](#verifytoken-secretorpublickey-options)
     * [.decode(token[, options])](#decodetoken-options)

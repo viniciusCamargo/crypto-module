@@ -431,10 +431,7 @@ this._pemService.checkCertificate([BUFFER])
 
 ## Change History
 
-* Add new methods (2017-09-26)
-    * [.checkPkcs12(bufferOrPath[, passphrase])](#checkpkcs12bufferorpath-passphrase)
-    * [.checkCertificate(certificate[, passphrase])](#checkcertificate-passphrase)
-* Implementation of all methods (2017-07-28)
+* Implementation of all methods (2017-12-19)
     * [.createPrivateKey([keyBitsize, options])](#createprivatekeykeybitsize-options)
     * [.createDhparam([keyBitsize])](#createdhparamkeybitsize)
     * [.createCSR([options])](#createcsroptions)
@@ -448,6 +445,8 @@ this._pemService.checkCertificate([BUFFER])
     * [.createPkcs12(key, certificate, password[, options])](#createpkcs12key-certificate-password-options)
     * [.readPkcs12(bufferOrPath[, options])](#readpkcs12bufferorpath-options)
     * [.verifySigningChain(certificate, ca)](#verifysigningchaincertificate-ca)
+    * [.checkPkcs12(bufferOrPath[, passphrase])](#checkpkcs12bufferorpath-passphrase)
+    * [.checkCertificate(certificate[, passphrase])](#checkcertificate-passphrase)
     
 [Back to top](#table-of-contents)
 

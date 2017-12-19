@@ -138,7 +138,7 @@ Import `key` from `PEM string`, `PEM/DER Buffer` or `components`. This method is
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/rsa/importKey';
+import '@hapiness/crypto/rsa/add/operator/importKey';
 
 ...
 
@@ -152,6 +152,27 @@ this._rsaService.createKey().importKey(
         e => console.error(e.message) // Show error message in the console
     );
 ```
+
+**Example - Lettable operator:**
+```javascript
+import { importKey } from '@hapiness/crypto/rsa/operators';
+
+...
+
+this._rsaService.createKey()
+    .pipe(
+        importKey(
+            '-----BEGIN RSA PRIVATE KEY-----\n'+
+            '...\n' +
+            '-----END RSA PRIVATE KEY-----'
+        )
+    )
+    .subscribe(
+        (nodeRSA: NodeRSA) => console.log(nodeRSA), // Show `NodeRSA` `'pkcs1-private-pem'` key in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
 [Back to top](#table-of-contents)
 
 ### `.generateKeyPair([bits, exponent])`
@@ -167,7 +188,7 @@ Generate new `RSA Key Pair` in pure `Javascript`. We advise to use `PEMService.c
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/rsa/generateKeyPair';
+import '@hapiness/crypto/rsa/add/operator/generateKeyPair';
 
 ...
 
@@ -177,6 +198,23 @@ this._rsaService.createKey().generateKeyPair()
         e => console.error(e.message) // Show error message in the console
     );
 ```
+
+**Example - Lettable operator:**
+```javascript
+import { generateKeyPair } from '@hapiness/crypto/rsa/operators';
+
+...
+
+this._rsaService.createKey()
+    .pipe(
+        generateKeyPair()
+    )
+    .subscribe(
+        (nodeRSA: NodeRSA) => console.log(nodeRSA), // Show `NodeRSA` `key pair` in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
 [Back to top](#table-of-contents)
 
 ### `.exportKey([format])`
@@ -191,7 +229,7 @@ Export `key` to `PEM string`, `PEM/DER Buffer` or `components`. This method is a
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/rsa/exportKey';
+import '@hapiness/crypto/rsa/add/operator/exportKey';
 
 ...
 
@@ -206,6 +244,27 @@ this._rsaService.loadKey(
         e => console.error(e.message) // Show error message in the console
     );
 ```
+
+**Example - Lettable operator:**
+```javascript
+import { exportKey } from '@hapiness/crypto/rsa/operators';
+
+...
+
+this._rsaService.loadKey(
+    '-----BEGIN RSA PRIVATE KEY-----\n'+
+    '...\n' +
+    '-----END RSA PRIVATE KEY-----'
+)
+    .pipe(
+        exportKey()
+    )
+    .subscribe(
+        (key: Key) => console.log(key), // Show `loaded` key in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
 [Back to top](#table-of-contents)
 
 ### `.isPrivate()`
@@ -217,7 +276,7 @@ Check if `key` is `private`. This method is an `Observable's` `operator`.
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/rsa/isPrivate';
+import '@hapiness/crypto/rsa/add/operator/isPrivate';
 
 ...
 
@@ -232,6 +291,27 @@ this._rsaService.loadKey(
         e => console.error(e.message) // Show error message in the console
     );
 ```
+
+**Example - Lettable operator:**
+```javascript
+import { isPrivate } from '@hapiness/crypto/rsa/operators';
+
+...
+
+this._rsaService.loadKey(
+    '-----BEGIN RSA PRIVATE KEY-----\n'+
+    '...\n' +
+    '-----END RSA PRIVATE KEY-----'
+)
+    .pipe(
+        isPrivate()
+    )
+    .subscribe(
+        (isPrivate: boolean) => console.log(isPrivate), // Show `true` in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
 [Back to top](#table-of-contents)
 
 ### `.isPublic([strict])`
@@ -246,7 +326,7 @@ Check if `key` is `public`. This method is an `Observable's` `operator`.
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/rsa/isPublic';
+import '@hapiness/crypto/rsa/add/operator/isPublic';
 
 ...
 
@@ -261,6 +341,27 @@ this._rsaService.loadKey(
         e => console.error(e.message) // Show error message in the console
     );
 ```
+
+**Example - Lettable operator:**
+```javascript
+import { isPublic } from '@hapiness/crypto/rsa/operators';
+
+...
+
+this._rsaService.loadKey(
+    '-----BEGIN RSA PRIVATE KEY-----\n'+
+    '...\n' +
+    '-----END RSA PRIVATE KEY-----'
+)
+    .pipe(
+        isPublic(true)
+    )
+    .subscribe(
+        (isPublic: boolean) => console.log(isPublic), // Show `false` in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
 [Back to top](#table-of-contents)
 
 ### `.isEmptyKey()`
@@ -272,7 +373,7 @@ Check if `key` is `empty`. This method is an `Observable's` `operator`.
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/rsa/isEmptyKey';
+import '@hapiness/crypto/rsa/add/operator/isEmptyKey';
 
 ...
 
@@ -287,6 +388,27 @@ this._rsaService.loadKey(
         e => console.error(e.message) // Show error message in the console
     );
 ```
+
+**Example - Lettable operator:**
+```javascript
+import { isEmptyKey } from '@hapiness/crypto/rsa/operators';
+
+...
+
+this._rsaService.loadKey(
+    '-----BEGIN RSA PRIVATE KEY-----\n'+
+    '...\n' +
+    '-----END RSA PRIVATE KEY-----'
+)
+    .pipe(
+        isEmptyKey()
+    )
+    .subscribe(
+        (isEmptyKey: boolean) => console.log(isEmptyKey), // Show `false` in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
 [Back to top](#table-of-contents)
 
 ### `.getKeySize()`
@@ -298,7 +420,7 @@ Return `key` size in `bits`. This method is an `Observable's` `operator`.
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/rsa/getKeySize';
+import '@hapiness/crypto/rsa/add/operator/getKeySize';
 
 ...
 
@@ -319,6 +441,33 @@ this._rsaService.loadKey(
         e => console.error(e.message) // Show error message in the console
     );
 ```
+
+**Example - Lettable operator:**
+```javascript
+import { getKeySize } from '@hapiness/crypto/rsa/operators';
+
+...
+
+this._rsaService.loadKey(
+    '-----BEGIN RSA PRIVATE KEY-----\n'+
+    'MIIBOQIBAAJAVY6quuzCwyOWzymJ7C4zXjeV/232wt2ZgJZ1kHzjI73wnhQ3WQcL\n'+
+    'DFCSoi2lPUW8/zspk0qWvPdtp6Jg5Lu7hwIDAQABAkBEws9mQahZ6r1mq2zEm3D/\n'+
+    'VM9BpV//xtd6p/G+eRCYBT2qshGx42ucdgZCYJptFoW+HEx/jtzWe74yK6jGIkWJ\n'+
+    'AiEAoNAMsPqwWwTyjDZCo9iKvfIQvd3MWnmtFmjiHoPtjx0CIQCIMypAEEkZuQUi\n'+
+    'pMoreJrOlLJWdc0bfhzNAJjxsTv/8wIgQG0ZqI3GubBxu9rBOAM5EoA4VNjXVigJ\n'+
+    'QEEk1jTkp8ECIQCHhsoq90mWM/p9L5cQzLDWkTYoPI49Ji+Iemi2T5MRqwIgQl07\n'+
+    'Es+KCn25OKXR/FJ5fu6A6A+MptABL3r8SEjlpLc=\n'+
+    '-----END RSA PRIVATE KEY-----'
+)
+    .pipe(
+        getKeySize()
+    )
+    .subscribe(
+        (keySize: number) => console.log(keySize), // Show `511` in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
 [Back to top](#table-of-contents)
 
 ### `.getMaxMessageSize()`
@@ -330,7 +479,7 @@ Return max `data` size for `encrypt` in `bytes`. This method is an `Observable's
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/rsa/getMaxMessageSize';
+import '@hapiness/crypto/rsa/add/operator/getMaxMessageSize';
 
 ...
 
@@ -351,6 +500,33 @@ this._rsaService.loadKey(
         e => console.error(e.message) // Show error message in the console
     );
 ```
+
+**Example - Lettable operator:**
+```javascript
+import { getMaxMessageSize } from '@hapiness/crypto/rsa/operators';
+
+...
+
+this._rsaService.loadKey(
+    '-----BEGIN RSA PRIVATE KEY-----\n'+
+    'MIIBOQIBAAJAVY6quuzCwyOWzymJ7C4zXjeV/232wt2ZgJZ1kHzjI73wnhQ3WQcL\n'+
+    'DFCSoi2lPUW8/zspk0qWvPdtp6Jg5Lu7hwIDAQABAkBEws9mQahZ6r1mq2zEm3D/\n'+
+    'VM9BpV//xtd6p/G+eRCYBT2qshGx42ucdgZCYJptFoW+HEx/jtzWe74yK6jGIkWJ\n'+
+    'AiEAoNAMsPqwWwTyjDZCo9iKvfIQvd3MWnmtFmjiHoPtjx0CIQCIMypAEEkZuQUi\n'+
+    'pMoreJrOlLJWdc0bfhzNAJjxsTv/8wIgQG0ZqI3GubBxu9rBOAM5EoA4VNjXVigJ\n'+
+    'QEEk1jTkp8ECIQCHhsoq90mWM/p9L5cQzLDWkTYoPI49Ji+Iemi2T5MRqwIgQl07\n'+
+    'Es+KCn25OKXR/FJ5fu6A6A+MptABL3r8SEjlpLc=\n'+
+    '-----END RSA PRIVATE KEY-----'
+)
+    .pipe(
+        getMaxMessageSize()
+    )
+    .subscribe(
+        (maxMessageSize: number) => console.log(maxMessageSize), // Show `22` in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
 [Back to top](#table-of-contents)
 
 ### `.encryptPublic(data[, encoding, sourceEncoding])`
@@ -367,7 +543,7 @@ Encrypting data method with `public key`. This method is an `Observable's` `oper
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/rsa/encryptPublic';
+import '@hapiness/crypto/rsa/add/operator/encryptPublic';
 
 ...
 
@@ -382,6 +558,27 @@ this._rsaService.loadKey(
         e => console.error(e.message) // Show error message in the console
     );
 ```
+
+**Example - Lettable operator:**
+```javascript
+import { encryptPublic } from '@hapiness/crypto/rsa/operators';
+
+...
+
+this._rsaService.loadKey(
+    '-----BEGIN RSA PUBLIC KEY-----\n'+
+    '...\n' +
+    '-----END RSA PUBLIC KEY-----'
+)
+    .pipe(
+        encryptPublic('data')
+    )
+    .subscribe(
+        (buffer: Buffer) => console.log(buffer), // Show encrypted `Buffer` in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
 [Back to top](#table-of-contents)
 
 ### `.encryptPrivate(data[, encoding, sourceEncoding])`
@@ -398,7 +595,7 @@ Encrypting data method with `private key`. This method is an `Observable's` `ope
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/rsa/encryptPrivate';
+import '@hapiness/crypto/rsa/add/operator/encryptPrivate';
 
 ...
 
@@ -413,6 +610,27 @@ this._rsaService.loadKey(
         e => console.error(e.message) // Show error message in the console
     );
 ```
+
+**Example - Lettable operator:**
+```javascript
+import { encryptPrivate } from '@hapiness/crypto/rsa/operators';
+
+...
+
+this._rsaService.loadKey(
+    '-----BEGIN RSA PRIVATE KEY-----\n'+
+    '...\n' +
+    '-----END RSA PRIVATE KEY-----'
+)
+    .pipe(
+        encryptPrivate('data')
+    )
+    .subscribe(
+        (buffer: Buffer) => console.log(buffer), // Show encrypted `Buffer` in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
 [Back to top](#table-of-contents)
 
 ### `.decryptPublic(data[, encoding])`
@@ -428,7 +646,7 @@ Decrypting data method with `public key`. This method is an `Observable's` `oper
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/rsa/decryptPublic';
+import '@hapiness/crypto/rsa/add/operator/decryptPublic';
 
 ...
 
@@ -443,6 +661,27 @@ this._rsaService.loadKey(
         e => console.error(e.message) // Show error message in the console
     );
 ```
+
+**Example - Lettable operator:**
+```javascript
+import { decryptPublic } from '@hapiness/crypto/rsa/operators';
+
+...
+
+this._rsaService.loadKey(
+    '-----BEGIN RSA PUBLIC KEY-----\n'+
+    '...\n' +
+    '-----END RSA PUBLIC KEY-----'
+)
+    .pipe(
+        decryptPublic(new Buffer('data'))
+    )
+    .subscribe(
+        (buffer: Buffer) => console.log(buffer), // Show decrypted `Buffer` in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
 [Back to top](#table-of-contents)
 
 ### `.decryptPrivate(data[, encoding])`
@@ -458,7 +697,7 @@ Decrypting data method with `private key`. This method is an `Observable's` `ope
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/rsa/decryptPrivate';
+import '@hapiness/crypto/rsa/add/operator/decryptPrivate';
 
 ...
 
@@ -473,6 +712,27 @@ this._rsaService.loadKey(
         e => console.error(e.message) // Show error message in the console
     );
 ```
+
+**Example - Lettable operator:**
+```javascript
+import { decryptPrivate } from '@hapiness/crypto/rsa/operators';
+
+...
+
+this._rsaService.loadKey(
+    '-----BEGIN RSA PRIVATE KEY-----\n'+
+    '...\n' +
+    '-----END RSA PRIVATE KEY-----'
+)
+    .pipe(
+        decryptPrivate(new Buffer('data'))
+    )
+    .subscribe(
+        (buffer: Buffer) => console.log(buffer), // Show decrypted `Buffer` in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
 [Back to top](#table-of-contents)
 
 ### `.sign(data[, encoding, sourceEncoding])`
@@ -489,7 +749,7 @@ Signing data method with `private key`. This method is an `Observable's` `operat
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/rsa/sign';
+import '@hapiness/crypto/rsa/add/operator/sign';
 
 ...
 
@@ -504,6 +764,27 @@ this._rsaService.loadKey(
         e => console.error(e.message) // Show error message in the console
     );
 ```
+
+**Example - Lettable operator:**
+```javascript
+import { sign } from '@hapiness/crypto/rsa/operators';
+
+...
+
+this._rsaService.loadKey(
+    '-----BEGIN RSA PRIVATE KEY-----\n'+
+    '...\n' +
+    '-----END RSA PRIVATE KEY-----'
+)
+    .pipe(
+        sign('data')
+    )
+    .subscribe(
+        (buffer: Buffer) => console.log(buffer), // Show signed `Buffer` in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
 [Back to top](#table-of-contents)
 
 ### `.verify(data, signature[, sourceEncoding, signatureEncoding])`
@@ -521,7 +802,7 @@ Verifying signed data method with `public key`. This method is an `Observable's`
 
 **Example:**
 ```javascript
-import '@hapiness/crypto/observable/add/rsa/verify';
+import '@hapiness/crypto/rsa/add/operator/verify';
 
 ...
 
@@ -536,6 +817,27 @@ this._rsaService.loadKey(
         e => console.error(e.message) // Show error message in the console
     );
 ```
+
+**Example - Lettable operator:**
+```javascript
+import { verify } from '@hapiness/crypto/rsa/operators';
+
+...
+
+this._rsaService.loadKey(
+    '-----BEGIN RSA PUBLIC KEY-----\n'+
+    '...\n' +
+    '-----END RSA PUBLIC KEY-----'
+)
+    .pipe(
+        verify('data', [SIGNATURE])
+    )
+    .subscribe(
+        (verify: boolean) => console.log(verify), // Show `verified` boolean in the console
+        e => console.error(e.message) // Show error message in the console
+    );
+```
+
 [Back to top](#table-of-contents)
 
 ## Parameters types in detail
