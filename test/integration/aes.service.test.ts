@@ -1,21 +1,19 @@
+import { Buffer } from 'buffer';
 /**
  * @see https://github.com/pana-cc/mocha-typescript
  */
 import { suite, test } from 'mocha-typescript';
 
+import { of } from 'rxjs/observable/of';
 /**
  * @see http://unitjs.com/
  */
 import * as unit from 'unit.js';
-
-import { of } from 'rxjs/observable/of';
-import { Buffer } from 'buffer';
-
 // element to test
 import { AESService, HashService } from '../../src';
-import '../../src/aes/add/operator/encryptWithAesKey';
 import '../../src/aes/add/operator/decryptWithAesKey';
-import { encryptWithAesKey, decryptWithAesKey } from '../../src/aes/operators';
+import '../../src/aes/add/operator/encryptWithAesKey';
+import { decryptWithAesKey, encryptWithAesKey } from '../../src/aes/operators';
 
 @suite('- Integration AESServiceTest file')
 export class AESServiceTest {
@@ -59,7 +57,8 @@ export class AESServiceTest {
             .subscribe(
                 null,
                 error => unit.object(error)
-                    .hasProperty('message', 'The "password" argument must be one of type string, Buffer, or TypedArray')
+                    .hasProperty('message', 'The "password" argument must be one of type string, ' +
+                        'Buffer, TypedArray, or DataView. Received type object')
                     .when(_ => done())
             );
     }
@@ -199,8 +198,8 @@ export class AESServiceTest {
     testAesServiceDecryptWithAesKeyObservableError(done) {
         of({ key: null, iv: null }).decryptWithAesKey(Buffer.from('a3d4bb8fcb8ec0e24a86cef07a28e3af', 'hex'))
             .subscribe(null, error => unit.object(error)
-                    .hasProperty('message', 'The first argument must be one of type string, Buffer, ' +
-                        'ArrayBuffer, Array, or Array-like Object. Received type null')
+                    .hasProperty('message', 'The first argument must be one of type string, ' +
+                        'Buffer, ArrayBuffer, Array, or Array-like Object. Received type object')
                     .when(_ => done()));
     }
 
@@ -214,8 +213,8 @@ export class AESServiceTest {
                 decryptWithAesKey(Buffer.from('a3d4bb8fcb8ec0e24a86cef07a28e3af', 'hex'))
             )
             .subscribe(null, error => unit.object(error)
-                .hasProperty('message', 'The first argument must be one of type string, Buffer, ' +
-                    'ArrayBuffer, Array, or Array-like Object. Received type null')
+                .hasProperty('message', 'The first argument must be one of type string, ' +
+                    'Buffer, ArrayBuffer, Array, or Array-like Object. Received type object')
                 .when(_ => done()));
     }
 }

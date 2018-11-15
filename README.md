@@ -142,6 +142,8 @@ To set up your development environment:
 
 ## Change History
 
+* v1.0.1 (2018-11-15)
+    * Fix of `cipher.final()` in `AESService.encryptWithAesKey()` and `AESService.decryptWithAesKey()` operators
 * v1.0.0 (2017-12-19)
     * Implementation of `CryptoModule` with `AESService`, `HashService`, `PEMService`, `RandomstringService` and `RSAService`
     * Implementation of `Observable's` operators for `AESService` and `RSAService` features.

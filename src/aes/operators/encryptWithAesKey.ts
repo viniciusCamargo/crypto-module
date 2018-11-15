@@ -1,9 +1,9 @@
+import { Buffer } from 'buffer';
+import { Cipher, createCipheriv } from 'crypto';
+import { OperatorFunction } from 'rxjs/interfaces';
 import { Observable } from 'rxjs/Observable';
 import { Operator } from 'rxjs/Operator';
 import { Subscriber } from 'rxjs/Subscriber';
-import { OperatorFunction } from 'rxjs/interfaces';
-import { Buffer } from 'buffer';
-import { Cipher, createCipheriv } from 'crypto';
 import { AESKeyCreationResult } from '../..';
 
 /**
@@ -70,8 +70,17 @@ class EncryptWithAesKeySubscriber<R> extends Subscriber<AESKeyCreationResult> {
             const cipher: Cipher = createCipheriv('aes-256-cbc', Buffer.from(aesKey.key, 'hex'), Buffer.from(aesKey.iv, 'hex'));
             const bufEncrypted: Buffer = cipher.update(Buffer.from(this._data));
             const bufFinal: Buffer = cipher.final();
+            let encrypted;
 
-            this.destination.next(Buffer.concat([bufEncrypted, bufFinal]));
+            // check if we have extra content
+            /* istanbul ignore else */
+            if (bufFinal) {
+                encrypted = Buffer.concat([ bufEncrypted, bufFinal ]);
+            } else {
+                encrypted = bufEncrypted;
+            }
+
+            this.destination.next(encrypted);
             this.destination.complete();
         } catch (e) {
             this.destination.error(e);

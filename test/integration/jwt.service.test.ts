@@ -40,7 +40,7 @@ export class JWTServiceTest {
      */
     @test('- `JWTService.sign()` Observable must return a string')
     testJWTServiceSignObservable(done) {
-        this._jwtService.sign({data: 'data to sign'}, new Buffer('secret to sign JWT'))
+        this._jwtService.sign({data: 'data to sign'}, Buffer.from('secret to sign JWT'))
             .subscribe((jwt: string) => unit.string(jwt).when(_ => done()));
     }
 
@@ -49,7 +49,7 @@ export class JWTServiceTest {
      */
     @test('- `JWTService.sign()` Observable must return an error if RSA signature without PEM private key')
     testJWTServiceSignObservableError(done) {
-        this._jwtService.sign({data: 'data to sign'}, new Buffer('secret to sign JWT'), { algorithm: 'RS512' })
+        this._jwtService.sign({data: 'data to sign'}, Buffer.from('secret to sign JWT'), { algorithm: 'RS512' })
             .subscribe(null, e => unit.object(e).hasProperty('message', 'error:0906D06C:PEM routines:PEM_read_bio:no start line')
                 .when(_ => done()));
     }
@@ -60,7 +60,7 @@ export class JWTServiceTest {
     @test('- `JWTService.verify()` Observable must return a payload object with signature verification')
     testJWTServiceVerifyObservable(done) {
         this._jwtService.verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiZGF0YSB0byBzaWduIiwiaWF0IjoxNTAxNTk4MzE0fQ' +
-            '.f0B-YNbl9qIbHgDRMcDBxZDrQN5UiLkX5_9McwNvHZI', new Buffer('secret to sign JWT'))
+            '.f0B-YNbl9qIbHgDRMcDBxZDrQN5UiLkX5_9McwNvHZI', Buffer.from('secret to sign JWT'))
             .subscribe((payload: object) => unit.object(payload).hasProperty('data', 'data to sign').when(_ => done()));
     }
 
@@ -70,7 +70,7 @@ export class JWTServiceTest {
     @test('- `JWTService.verify()` Observable must return an error if signature is missing in JWT')
     testJWTServiceVerifyObservableError(done) {
         this._jwtService.verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiZGF0YSB0byBzaWduIiwiaWF0IjoxNTAxNTk4MzE0fQ',
-            new Buffer('secret to sign JWT'))
+            Buffer.from('secret to sign JWT'))
             .subscribe(null, (e: JsonWebTokenError) => unit.object(e).hasProperty('name', 'JsonWebTokenError')
                 .hasProperty('message', 'jwt malformed').when(_ => done()));
     }

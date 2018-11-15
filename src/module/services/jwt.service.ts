@@ -58,7 +58,7 @@ export class JWTService {
      */
     verify(token: string, secretOrPublicKey: string | Buffer, options?: VerifyOptions): Observable<object | string> {
         return (<(token: string, secretOrPublicKey: string | Buffer, options?: VerifyOptions) =>
-            Observable<string>> bindNodeCallback(verify))(token, secretOrPublicKey, options);
+            Observable<object | string>> bindNodeCallback(verify))(token, secretOrPublicKey, options);
     }
 
     /**

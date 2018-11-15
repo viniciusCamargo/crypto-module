@@ -70,8 +70,17 @@ class DecryptWithAesKeySubscriber<R> extends Subscriber<AESKeyCreationResult> {
             const decipher: Decipher = createDecipheriv('aes-256-cbc', Buffer.from(aesKey.key, 'hex'), Buffer.from(aesKey.iv, 'hex'));
             const bufDecrypted: Buffer = decipher.update(Buffer.from(this._data));
             const bufFinal: Buffer = decipher.final();
+            let decrypted;
 
-            this.destination.next(Buffer.concat([bufDecrypted, bufFinal]));
+            // check if we have extra content
+            /* istanbul ignore else */
+            if (bufFinal) {
+                decrypted = Buffer.concat([bufDecrypted, bufFinal]);
+            } else {
+                decrypted = bufDecrypted;
+            }
+
+            this.destination.next(decrypted);
             this.destination.complete();
         } catch (e) {
             this.destination.error(e);

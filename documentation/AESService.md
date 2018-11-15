@@ -153,6 +153,8 @@ this._aesService.createKey('P3HQdR35PUQLZ5ioOrsPlxx7QWra7WQl', 'Kt9V3wgxrhpf8GN3
 
 ## Change History
 
+* Fix operators (2018-11-15)
+    * Fix of `cipher.final()` in `AESService.encryptWithAesKey()` and `AESService.decryptWithAesKey()` operators
 * Implementation of all methods (2017-12-19)
     * [.createKey(password, salt)](#createkeypassword-salt)
     * [.encryptWithAesKey(data)](#encryptwithaeskeydata)
